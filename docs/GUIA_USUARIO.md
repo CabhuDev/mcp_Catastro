@@ -1,8 +1,14 @@
-# 📖 Guía de Usuario - Servidor MCP Catastro 100% Puro
+# 📖 Guía de Usuario - Servidor MCP Catastro Completo
 
 ## 🎯 Introducción
 
-**Servidor MCP (Model Context Protocol) 100% real** para consultar datos del **Catastro de España** directamente desde **Claude Code**. Sin dependencias web, sin Docker, solo lo esencial.
+**Servidor MCP (Model Context Protocol) 100% profesional** con **15 herramientas especializadas** para consultar datos del **Catastro de España** directamente desde **Claude Code**. 
+
+### ✨ **NOVEDADES v4.0.0**
+- 🗺️ **Geometrías WFS** - Polígonos precisos de parcelas
+- 🏘️ **MetaParcelas** - Parcelas con múltiples referencias
+- 📄 **Export GeoJSON** - Compatible con aplicaciones de mapas
+- 🚀 **Sistema de Cache** - Optimización automática de consultas frecuentes
 
 ---
 
@@ -42,7 +48,9 @@ claude --mcp-config '{"mcpServers":{"catastro":{"command":"python","args":["C:\\
 
 ---
 
-## 🛠️ Herramientas MCP Disponibles
+## 🛠️ Herramientas MCP Disponibles - 15 Herramientas Profesionales
+
+### **🎯 CONSULTAS BÁSICAS**
 
 ### 1. **Consultar por Referencia Catastral**
 ```
@@ -56,13 +64,32 @@ Usuario: "Consulta la referencia catastral 2749704YJ0624N0001DI"
 
 Claude usará automáticamente la herramienta y mostrará:
 - Datos básicos del inmueble
-- Dirección catastral
-- Superficie construida
+- Dirección catastral completa
+- Superficie construida y útil
 - Año de construcción
-- Uso del inmueble
+- Uso del inmueble (residencial/comercial/industrial)
+- Valor catastral
 ```
 
-### 2. **Consultar por Coordenadas**
+### 2. **Consultar Parcela por Código (División Horizontal)**
+```
+Herramienta: consultar_parcela_por_codigo
+Entrada: código de parcela de 14 caracteres
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Lista todos los inmuebles de la parcela 2314501EG1421S"
+
+Claude mostrará:
+- Lista completa de inmuebles en la parcela
+- Coeficientes de participación
+- Escaleras, plantas y puertas
+- Usos específicos de cada inmueble
+- Referencias catastrales completas
+```
+
+### 3. **Consultar por Coordenadas**
 ```
 Herramienta: consultar_catastro_por_coordenadas  
 Entrada: latitud y longitud (España: 35-44°N, -10-5°E)
@@ -75,10 +102,191 @@ Usuario: "¿Qué inmueble hay en las coordenadas 40.4168, -3.7038?"
 Claude encontrará automáticamente:
 - Referencia catastral del inmueble
 - Datos completos de la parcela
-- Información de construcción
+- Información de construcción y ubicación
 ```
 
-### 3. **Generar Resumen IA**
+---
+
+### **🗺️ LISTADOS Y NAVEGACIÓN**
+
+### 4. **Listar Provincias**
+```
+Herramienta: listar_provincias
+Entrada: ninguna (lista completa)
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Lista todas las provincias de España"
+
+Claude mostrará:
+- 52 provincias españolas oficiales
+- Nombres normalizados
+- Total de provincias disponibles
+```
+
+### 5. **Listar Municipios**
+```
+Herramienta: listar_municipios
+Entrada: provincia + filtro opcional
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Lista los municipios de Granada que empiecen por 'B'"
+
+Claude mostrará:
+- BAZA, BENALUA, BENAMAUREL, etc.
+- Filtrado inteligente
+- Total de municipios encontrados
+```
+
+### 6. **Listar Calles**
+```
+Herramienta: listar_calles
+Entrada: provincia + municipio
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Lista las calles de Baza, Granada"
+
+Claude mostrará:
+- Callejero completo del municipio
+- Tipos de vía (CL, AV, PZ, etc.)
+- Nombres oficiales normalizados
+```
+
+---
+
+### **🔄 CONVERSIONES GEOESPACIALES**
+
+### 7. **Coordenadas → Referencia Catastral**
+```
+Herramienta: convertir_coordenadas_a_referencia
+Entrada: latitud, longitud, sistema de referencia
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "¿Cuál es la referencia catastral de las coordenadas 40.4168, -3.7038?"
+
+Claude convertirá automáticamente:
+- Coordenadas GPS → Referencia catastral
+- Validación de coordenadas dentro de España
+- Soporte para múltiples sistemas de referencia
+```
+
+### 8. **Referencia Catastral → Coordenadas**
+```
+Herramienta: convertir_referencia_a_coordenadas
+Entrada: referencia catastral, sistema de referencia
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "¿Dónde está ubicada la referencia 4418928VG4141G0001IW?"
+
+Claude calculará:
+- Coordenadas del centroide de la parcela
+- Ubicación GPS precisa
+- Validación de formato de referencia
+```
+
+### 9. **Geocodificar Dirección**
+```
+Herramienta: geocodificar_direccion
+Entrada: dirección en texto + municipio opcional
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "¿Dónde está Gran Vía 1, Madrid?"
+
+Claude geocodificará usando CartoCiudad:
+- Coordenadas precisas de la dirección
+- Referencia catastral asociada
+- Validación mediante IGN
+```
+
+---
+
+### **🔧 FUNCIONALIDADES AVANZADAS** ✨ **NUEVAS**
+
+### 10. **Obtener Geometría de Parcela** ✨
+```
+Herramienta: obtener_geometria_parcela
+Entrada: referencia catastral + sistema de referencia
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Obtén la geometría completa de la parcela 4418928VG4141G0001IW"
+
+Claude obtendrá mediante WFS:
+- Polígono preciso de la parcela
+- Coordenadas de todos los vértices
+- Centroide calculado
+- Superficie en metros cuadrados
+- Compatible con aplicaciones GIS
+```
+
+### 11. **Consultar MetaParcela** ✨
+```
+Herramienta: consultar_metaparcela
+Entrada: referencia base O componentes (provincia/municipio/polígono/parcela)
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Consulta la MetaParcela de Madrid, municipio Madrid, polígono 1, parcela 1"
+
+Claude analizará:
+- Todas las parcelas que componen la MetaParcela
+- Información catastral completa de cada una
+- Geometrías individuales
+- Referencias catastrales múltiples
+```
+
+### 12. **Exportar Geometría GeoJSON** ✨
+```
+Herramienta: exportar_geometria_geojson
+Entrada: referencia catastral
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Exporta la geometría de la parcela 4418928VG4141G0001IW en formato GeoJSON"
+
+Claude generará:
+- GeoJSON estándar completo
+- Compatible con Leaflet, OpenLayers, QGIS
+- Propiedades de la parcela incluidas
+- Listo para usar en aplicaciones web de mapas
+```
+
+---
+
+### **🛠️ HERRAMIENTAS DE SOPORTE**
+
+### 13. **Validar Referencia Catastral**
+```
+Herramienta: validar_referencia_catastral
+Entrada: referencia de 14 o 20 caracteres
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Valida la referencia 2314501EG1421S"
+
+Claude analizará:
+- Formato correcto (14 o 20 caracteres)
+- Componentes: provincia, municipio, sector, manzana, parcela
+- Estado de validación
+- Sugerencias para completar si es parcial
+```
+
+### 14. **Generar Resumen IA**
 ```
 Herramienta: generar_resumen_ia
 Entrada: referencia + opciones (idioma, usar_openai)
@@ -89,15 +297,31 @@ Entrada: referencia + opciones (idioma, usar_openai)
 Usuario: "Haz un resumen profesional de la referencia 2749704YJ0624N0001DI"
 
 Claude generará:
-📋 Resumen Catastral
+📋 RESUMEN PROFESIONAL CATASTRAL
 **Referencia:** 2749704YJ0624N0001DI
-**Uso:** Residencial
-**Superficie construida:** 92 m²
-**Año construcción:** 2007
-🏠 Inmueble contemporáneo (10-30 años)
+**Tipo:** Vivienda unifamiliar
+**Superficie:** 92 m² construidos
+**Antigüedad:** 17 años (2007)
+**Ubicación:** Zona residencial consolidada
+🏠 **Valoración:** Inmueble contemporáneo en buen estado
 ```
 
-### 4. **Validar Referencia**
+### 15. **Buscar por Dirección (Informativo)**
+```
+Herramienta: buscar_catastro_por_direccion
+Entrada: dirección completa
+```
+
+**Ejemplo con Claude Code:**
+```
+Usuario: "Busca CALLE REYES CATOLICOS 6, 18100, ARMILLA, GRANADA"
+
+Claude explicará:
+- Limitaciones de la búsqueda por dirección
+- Alternativas funcionales disponibles
+- Recomendaciones para obtener la referencia catastral
+- Enlaces a recursos oficiales
+```
 ```
 Herramienta: validar_referencia_catastral
 Entrada: referencia a validar

@@ -3,10 +3,11 @@ Servicio principal para consultas al Catastro de España
 """
 
 import asyncio
+import json
 import logging
 import xml.etree.ElementTree as ET
 from typing import Optional, Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timedelta
 import httpx
 from xml.dom import minidom
 
@@ -19,7 +20,11 @@ from models.catastro_models import (
     ReferenciaCatastral,
     ErrorCatastral
 )
-from config.settings import get_settings, CatastroEndpoints, ERROR_MESSAGES
+from config.settings import (
+    get_settings, CatastroEndpoints, ERROR_MESSAGES, 
+    MAPEOS_PROVINCIAS, TIPOS_VIA, SISTEMAS_REFERENCIA,
+    normalizar_provincia, obtener_codigo_tipo_via, validar_sistema_referencia
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +35,40 @@ class CatastroService:
     def __init__(self):
         self.settings = get_settings()
         self.base_url = self.settings.catastro_base_url
+        self.base_url_callejero = self.settings.catastro_base_url_callejero
+        self.base_url_coordenadas = self.settings.catastro_base_url_coordenadas
+        self.base_url_geografia = self.settings.catastro_base_url_geografia
+        self.base_url_croquis = self.settings.catastro_base_url_croquis
+        self.cartociudad_url = self.settings.cartociudad_base_url
         self.timeout = self.settings.catastro_timeout
         self.max_retries = self.settings.catastro_max_retries
         self.retry_delay = self.settings.catastro_retry_delay
+        
+        # Cache simple para consultas frecuentes
+        self._cache = {}
+        self._cache_ttl = timedelta(hours=24)  # Cache válido por 24 horas
+        
+    def _get_cache_key(self, prefix: str, *args) -> str:
+        """Genera una clave de cache"""
+        return f"{prefix}:{':'.join(str(arg) for arg in args)}"
+    
+    def _set_cache(self, key: str, value: Any) -> None:
+        """Guarda un valor en cache"""
+        self._cache[key] = {
+            'value': value,
+            'timestamp': datetime.now()
+        }
+    
+    def _get_cache(self, key: str) -> Optional[Any]:
+        """Obtiene un valor del cache si no ha expirado"""
+        if key in self._cache:
+            cache_entry = self._cache[key]
+            if datetime.now() - cache_entry['timestamp'] < self._cache_ttl:
+                return cache_entry['value']
+            else:
+                # Eliminar entrada expirada
+                del self._cache[key]
+        return None
         
     async def consultar_por_referencia(self, referencia: str) -> CatastroResponse:
         """
@@ -1051,3 +1087,591 @@ ALTERNATIVAS:
         except Exception as e:
             logger.warning(f"Error procesando inmueble oficial: {str(e)}")
             return None
+    
+    # NUEVAS FUNCIONALIDADES AVANZADAS
+    
+    async def listar_provincias(self) -> List[str]:
+        """Obtiene la lista de provincias de España (con cache)"""
+        try:
+            # Verificar cache
+            cache_key = self._get_cache_key("provincias")
+            cached_result = self._get_cache(cache_key)
+            if cached_result is not None:
+                logger.info("Provincias obtenidas desde cache")
+                return cached_result
+            
+            url = f"{self.base_url}{CatastroEndpoints.OBTENER_PROVINCIAS}"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url)
+                response.raise_for_status()
+                
+                datos = response.json()
+                consulta_result = datos.get('consulta_provincieroResult', {})
+                provinciero = consulta_result.get('provinciero', {})
+                provincias = provinciero.get('prov', [])
+                
+                resultado = [provincia.get('np', '') for provincia in provincias]
+                
+                # Guardar en cache
+                self._set_cache(cache_key, resultado)
+                logger.info(f"Provincias obtenidas y guardadas en cache: {len(resultado)}")
+                
+                return resultado
+                
+        except Exception as e:
+            logger.error(f"Error obteniendo provincias: {str(e)}")
+            return []
+    
+    async def listar_municipios(self, provincia: str, municipio_parcial: str = None) -> List[str]:
+        """Obtiene la lista de municipios de una provincia (con cache)"""
+        try:
+            # Normalizar provincia
+            provincia_normalizada = normalizar_provincia(provincia)
+            
+            # Verificar cache solo para consultas completas (sin filtro parcial)
+            cache_key = self._get_cache_key("municipios", provincia_normalizada, municipio_parcial or "")
+            cached_result = self._get_cache(cache_key)
+            if cached_result is not None:
+                logger.info(f"Municipios de {provincia} obtenidos desde cache")
+                return cached_result
+            
+            params = {
+                'provincia': provincia_normalizada
+            }
+            if municipio_parcial:
+                params['municipio'] = municipio_parcial
+            
+            url = f"{self.base_url}{CatastroEndpoints.OBTENER_MUNICIPIOS}"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                
+                datos = response.json()
+                consulta_result = datos.get('consulta_municipieroResult', {})
+                municipiero = consulta_result.get('municipiero', {})
+                municipios = municipiero.get('muni', [])
+                
+                resultado = [municipio.get('nm', '') for municipio in municipios]
+                
+                # Guardar en cache (especialmente útil para consultas completas)
+                self._set_cache(cache_key, resultado)
+                logger.info(f"Municipios de {provincia} obtenidos y guardados en cache: {len(resultado)}")
+                
+                return resultado
+                
+        except Exception as e:
+            logger.error(f"Error obteniendo municipios de {provincia}: {str(e)}")
+            return []
+    
+    async def listar_calles(self, provincia: str, municipio: str) -> List[str]:
+        """Obtiene la lista de calles de un municipio"""
+        try:
+            # Normalizar provincia
+            provincia_normalizada = normalizar_provincia(provincia)
+            
+            params = {
+                'Provincia': provincia_normalizada,
+                'Municipio': municipio.upper()
+            }
+            
+            url = f"{self.base_url}{CatastroEndpoints.OBTENER_CALLEJERO}"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                
+                datos = response.json()
+                consulta_result = datos.get('consulta_callejeroResult', {})
+                callejero = consulta_result.get('callejero', {})
+                calles = callejero.get('calle', [])
+                
+                return [f"{calle.get('dir', {}).get('tv', '')} {calle.get('dir', {}).get('nv', '')}" 
+                       for calle in calles]
+                
+        except Exception as e:
+            logger.error(f"Error obteniendo calles de {municipio}, {provincia}: {str(e)}")
+            return []
+    
+    async def convertir_coordenadas_a_rc(self, latitud: float, longitud: float, srs: str = 'EPSG:4326') -> Optional[str]:
+        """Convierte coordenadas a referencia catastral"""
+        try:
+            if not validar_sistema_referencia(srs):
+                logger.warning(f"Sistema de referencia no válido: {srs}")
+                srs = 'EPSG:4326'
+            
+            params = {
+                'CoorX': str(longitud),
+                'CoorY': str(latitud),
+                'SRS': srs
+            }
+            
+            url = f"{self.base_url}{CatastroEndpoints.CONSULTA_RCCOOR}"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                
+                datos = response.json()
+                consulta_result = datos.get('Consulta_RCCOORResult', {})
+                coordenadas = consulta_result.get('coordenadas', {})
+                coord = coordenadas.get('coord', [])
+                
+                if coord and len(coord) > 0:
+                    pc_data = coord[0].get('pc', {})
+                    if isinstance(pc_data, dict):
+                        # Construir referencia a partir de los componentes
+                        return ''.join([str(v) for v in pc_data.values()])
+                    else:
+                        return str(pc_data)
+                
+            return None
+                
+        except Exception as e:
+            logger.error(f"Error convirtiendo coordenadas a RC: {str(e)}")
+            return None
+    
+    async def convertir_rc_a_coordenadas(self, referencia: str, srs: str = 'EPSG:4326') -> Optional[Dict[str, float]]:
+        """Convierte referencia catastral a coordenadas"""
+        try:
+            if not validar_sistema_referencia(srs):
+                logger.warning(f"Sistema de referencia no válido: {srs}")
+                srs = 'EPSG:4326'
+                
+            # Usar solo los primeros 14 caracteres para compatibilidad
+            rc_corregido = referencia[:14] if len(referencia) > 14 else referencia
+            
+            params = {
+                'RefCat': rc_corregido,
+                'SRS': srs
+            }
+            
+            url = f"{self.base_url}{CatastroEndpoints.CONSULTA_CPMRC}"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                
+                datos = response.json()
+                consulta_result = datos.get('Consulta_CPMRCResult', {})
+                coordenadas = consulta_result.get('coordenadas', {})
+                coord = coordenadas.get('coord', [])
+                
+                if coord and len(coord) > 0:
+                    geo = coord[0].get('geo', {})
+                    return {
+                        'latitud': float(geo.get('ycen', 0)),
+                        'longitud': float(geo.get('xcen', 0))
+                    }
+                
+            return None
+                
+        except Exception as e:
+            logger.error(f"Error convirtiendo RC a coordenadas: {str(e)}")
+            return None
+    
+    async def geocodificar_direccion(self, direccion: str, municipio: str = None) -> Optional[Dict[str, Any]]:
+        """Geocodifica una dirección usando CartoCiudad"""
+        try:
+            query = f"{direccion}"
+            if municipio:
+                query += f", {municipio}"
+            
+            params = {'q': query}
+            url = f"{self.cartociudad_url}/findJsonp"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                
+                # CartoCiudad devuelve JSONP, necesitamos limpiar
+                content = response.text
+                if content.startswith('callback(') and content.endswith(')'):
+                    content = content[9:-1]  # Remover callback( y )
+                
+                datos = json.loads(content)
+                
+                return {
+                    'latitud': datos.get('lat'),
+                    'longitud': datos.get('lng'),
+                    'referencia_catastral': datos.get('refCatastral')
+                }
+                
+        except Exception as e:
+            logger.error(f"Error geocodificando dirección {direccion}: {str(e)}")
+            return None
+    
+    def comprobar_errores_catastro(self, respuesta: Dict[str, Any]) -> bool:
+        """Comprueba errores en la respuesta del catastro (implementación avanzada)"""
+        try:
+            if len(list(respuesta.values())) > 0:
+                primer_valor = list(respuesta.values())[0]
+                if primer_valor is not None and 'lerr' in primer_valor:
+                    if 'err' in primer_valor['lerr']:
+                        error_msg = primer_valor['lerr']['err'][0]['des']
+                    else:
+                        error_msg = primer_valor['lerr'][0]['des']
+                    
+                    logger.error(f"Error del Catastro: {error_msg}")
+                    return False
+            return True
+        except Exception as e:
+            logger.warning(f"Error comprobando errores del catastro: {str(e)}")
+            return True  # Si no podemos verificar, asumimos que no hay error
+    
+    # FUNCIONALIDADES AVANZADAS BASADAS EN ESCatastroLib
+    
+    async def obtener_geometria_parcela(self, referencia: str, srs: str = 'EPSG:4326') -> Optional[Dict[str, Any]]:
+        """
+        Obtiene la geometría completa de una parcela usando servicios WFS
+        Basado en la implementación de ESCatastroLib
+        
+        Args:
+            referencia: Referencia catastral de la parcela
+            srs: Sistema de referencia espacial (por defecto EPSG:4326)
+            
+        Returns:
+            Dict con centroide, geometría y superficie de la parcela
+        """
+        try:
+            if not validar_sistema_referencia(srs):
+                logger.warning(f"Sistema de referencia no válido: {srs}, usando EPSG:4326")
+                srs = 'EPSG:4326'
+            
+            # Validar formato de referencia
+            ref_validada = ReferenciaCatastral(referencia=referencia)
+            
+            # Parámetros para el servicio WFS del Catastro
+            params = {
+                'service': 'wfs',
+                'version': '2',
+                'request': 'getfeature',
+                'STOREDQUERIE_ID': 'GetParcel',
+                'refcat': ref_validada.referencia,
+                'srsname': srs
+            }
+            
+            # URL del servicio WFS de geografía del Catastro
+            url = f"{self.base_url_geografia}"
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                
+                # La respuesta es XML, necesitamos parsearlo
+                import xml.etree.ElementTree as ET
+                
+                root = ET.fromstring(response.content)
+                
+                # Extraer el centroide
+                centroide = self._extraer_centroide_wfs(root)
+                
+                # Extraer la geometría del polígono
+                geometria = self._extraer_geometria_wfs(root)
+                
+                # Calcular superficie aproximada (si tenemos geometría)
+                superficie = self._calcular_superficie_geometria(geometria) if geometria else None
+                
+                return {
+                    'referencia_catastral': ref_validada.referencia,
+                    'centroide': centroide,
+                    'geometria': geometria,
+                    'superficie_calculada': superficie,
+                    'sistema_referencia': srs,
+                    'tipo_geometria': 'poligono'
+                }
+                
+        except Exception as e:
+            logger.error(f"Error obteniendo geometría de parcela {referencia}: {str(e)}")
+            return None
+    
+    def _extraer_centroide_wfs(self, root: ET.Element) -> Optional[Dict[str, float]]:
+        """Extrae las coordenadas del centroide desde la respuesta WFS"""
+        try:
+            # Buscar el elemento gml:Point
+            for elem in root.iter():
+                if 'Point' in elem.tag:
+                    pos_elem = elem.find('.//{http://www.opengis.net/gml/3.2}pos')
+                    if pos_elem is not None and pos_elem.text:
+                        coords = pos_elem.text.split()
+                        if len(coords) >= 2:
+                            return {
+                                'latitud': float(coords[1]),
+                                'longitud': float(coords[0])
+                            }
+            return None
+        except Exception as e:
+            logger.warning(f"Error extrayendo centroide WFS: {str(e)}")
+            return None
+    
+    def _extraer_geometria_wfs(self, root: ET.Element) -> Optional[List[Dict[str, float]]]:
+        """Extrae los puntos del polígono desde la respuesta WFS"""
+        try:
+            # Buscar el elemento gml:posList
+            for elem in root.iter():
+                if 'posList' in elem.tag and elem.text:
+                    coordenadas = elem.text.split()
+                    puntos = []
+                    
+                    # Las coordenadas vienen en pares (x, y)
+                    for i in range(0, len(coordenadas), 2):
+                        if i + 1 < len(coordenadas):
+                            puntos.append({
+                                'longitud': float(coordenadas[i]),
+                                'latitud': float(coordenadas[i + 1])
+                            })
+                    
+                    return puntos
+            return None
+        except Exception as e:
+            logger.warning(f"Error extrayendo geometría WFS: {str(e)}")
+            return None
+    
+    def _calcular_superficie_geometria(self, geometria: List[Dict[str, float]]) -> Optional[float]:
+        """Calcula la superficie aproximada usando la fórmula del área del polígono"""
+        try:
+            if not geometria or len(geometria) < 3:
+                return None
+            
+            # Fórmula del área del polígono (Shoelace formula)
+            area = 0.0
+            n = len(geometria)
+            
+            for i in range(n):
+                j = (i + 1) % n
+                area += geometria[i]['longitud'] * geometria[j]['latitud']
+                area -= geometria[j]['longitud'] * geometria[i]['latitud']
+            
+            area = abs(area) / 2.0
+            
+            # Convertir de grados cuadrados a metros cuadrados (aproximado)
+            # Factor de conversión aproximado para España
+            factor_conversion = 111320 * 111320 * 0.7  # Ajuste para latitud media de España
+            
+            return area * factor_conversion
+            
+        except Exception as e:
+            logger.warning(f"Error calculando superficie: {str(e)}")
+            return None
+    
+    async def consultar_metaparcela(self, referencia: str = None, provincia: str = None, 
+                                   municipio: str = None, poligono: int = None, 
+                                   parcela: int = None) -> Optional[Dict[str, Any]]:
+        """
+        Consulta una MetaParcela (parcela con múltiples referencias catastrales)
+        Basado en la clase MetaParcela de ESCatastroLib
+        
+        Args:
+            referencia: Referencia catastral base
+            provincia: Nombre de la provincia
+            municipio: Nombre del municipio
+            poligono: Número del polígono
+            parcela: Número de la parcela
+            
+        Returns:
+            Dict con información de todas las parcelas que componen la MetaParcela
+        """
+        try:
+            parcelas_encontradas = []
+            
+            if referencia:
+                # Buscar por referencia catastral
+                params = {
+                    "Provincia": "",
+                    "Municipio": "",
+                    "RefCat": referencia
+                }
+                url = f"{self.base_url}{CatastroEndpoints.CONSULTA_DNPRC}"
+                
+            elif provincia and municipio and poligono and parcela:
+                # Buscar por componentes de parcela
+                params = {
+                    'Provincia': normalizar_provincia(provincia),
+                    'Municipio': municipio.upper(),
+                    'Poligono': str(poligono),
+                    'Parcela': str(parcela)
+                }
+                url = f"{self.base_url}{CatastroEndpoints.CONSULTA_DNPPP}"
+            else:
+                raise ValueError("Información insuficiente para la búsqueda de MetaParcela")
+            
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                headers = {
+                    "Accept": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+                response = await self._realizar_consulta_con_reintentos(client, url, params, headers)
+            
+            # Parsear respuesta
+            datos_parseados = self._parsear_respuesta_json(response.text)
+            
+            # Verificar si hay múltiples referencias
+            consulta_key = 'consulta_dnprcResult' if referencia else 'consulta_dnpppResult'
+            consulta_result = datos_parseados.get(consulta_key, {})
+            
+            # Verificar número de parcelas
+            cudnp = consulta_result.get("control", {}).get("cudnp", 1)
+            
+            if cudnp > 1:
+                # Es una MetaParcela con múltiples referencias
+                lrcdnp = consulta_result.get('lrcdnp', {})
+                rcdnp_array = lrcdnp.get('rcdnp', [])
+                
+                if isinstance(rcdnp_array, list):
+                    for parcela_data in rcdnp_array:
+                        parcela_info = await self._procesar_parcela_metaparcela(parcela_data)
+                        if parcela_info:
+                            parcelas_encontradas.append(parcela_info)
+                elif isinstance(rcdnp_array, dict):
+                    parcela_info = await self._procesar_parcela_metaparcela(rcdnp_array)
+                    if parcela_info:
+                        parcelas_encontradas.append(parcela_info)
+                
+                return {
+                    'tipo': 'metaparcela',
+                    'total_parcelas': len(parcelas_encontradas),
+                    'parcelas': parcelas_encontradas,
+                    'referencia_base': referencia,
+                    'ubicacion': {
+                        'provincia': provincia,
+                        'municipio': municipio,
+                        'poligono': poligono,
+                        'parcela': parcela
+                    }
+                }
+            else:
+                # Es una parcela simple, no una MetaParcela
+                return {
+                    'tipo': 'parcela_simple',
+                    'mensaje': 'Esta referencia corresponde a una parcela simple, no a una MetaParcela',
+                    'sugerencia': 'Use consultar_catastro_por_referencia para parcelas simples'
+                }
+                
+        except Exception as e:
+            logger.error(f"Error consultando MetaParcela: {str(e)}")
+            return None
+    
+    async def _procesar_parcela_metaparcela(self, parcela_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Procesa los datos de una parcela individual dentro de una MetaParcela"""
+        try:
+            # Extraer referencia catastral
+            rc = parcela_data.get('rc', {})
+            referencia_completa = ''.join([
+                rc.get('pc1', ''),
+                rc.get('pc2', ''), 
+                rc.get('car', ''),
+                rc.get('cc1', ''),
+                rc.get('cc2', '')
+            ])
+            
+            # Obtener información completa de la parcela
+            respuesta_parcela = await self.consultar_por_referencia(referencia_completa)
+            
+            # Obtener geometría si está disponible
+            geometria = await self.obtener_geometria_parcela(referencia_completa)
+            
+            return {
+                'referencia_catastral': referencia_completa,
+                'datos_catastro': respuesta_parcela,
+                'geometria': geometria
+            }
+            
+        except Exception as e:
+            logger.warning(f"Error procesando parcela de MetaParcela: {str(e)}")
+            return None
+    
+    async def exportar_geometria_geojson(self, referencia: str) -> Optional[Dict[str, Any]]:
+        """
+        Exporta la geometría de una parcela en formato GeoJSON
+        
+        Args:
+            referencia: Referencia catastral de la parcela
+            
+        Returns:
+            Dict con el GeoJSON de la parcela
+        """
+        try:
+            # Obtener geometría de la parcela
+            geometria_data = await self.obtener_geometria_parcela(referencia)
+            
+            if not geometria_data or not geometria_data.get('geometria'):
+                return None
+            
+            # Convertir geometría a formato GeoJSON
+            coordenadas_geojson = []
+            for punto in geometria_data['geometria']:
+                coordenadas_geojson.append([
+                    punto['longitud'],
+                    punto['latitud']
+                ])
+            
+            # Cerrar el polígono si no está cerrado
+            if coordenadas_geojson and coordenadas_geojson[0] != coordenadas_geojson[-1]:
+                coordenadas_geojson.append(coordenadas_geojson[0])
+            
+            # Crear estructura GeoJSON
+            geojson = {
+                "type": "Feature",
+                "properties": {
+                    "referencia_catastral": referencia,
+                    "superficie_calculada": geometria_data.get('superficie_calculada'),
+                    "sistema_referencia": geometria_data.get('sistema_referencia'),
+                    "centroide": geometria_data.get('centroide')
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [coordenadas_geojson]
+                }
+            }
+            
+            return geojson
+            
+        except Exception as e:
+            logger.error(f"Error exportando geometría a GeoJSON: {str(e)}")
+            return None
+    
+    def obtener_estadisticas_cache(self) -> Dict[str, Any]:
+        """Obtiene estadísticas del cache para monitorización"""
+        try:
+            total_entradas = len(self._cache)
+            entradas_validas = 0
+            entradas_expiradas = 0
+            
+            ahora = datetime.now()
+            
+            for key, entry in self._cache.items():
+                if ahora - entry['timestamp'] < self._cache_ttl:
+                    entradas_validas += 1
+                else:
+                    entradas_expiradas += 1
+            
+            return {
+                'total_entradas': total_entradas,
+                'entradas_validas': entradas_validas,
+                'entradas_expiradas': entradas_expiradas,
+                'ttl_horas': self._cache_ttl.total_seconds() / 3600,
+                'memoria_aproximada_kb': len(str(self._cache)) / 1024
+            }
+        except Exception as e:
+            logger.warning(f"Error obteniendo estadísticas de cache: {str(e)}")
+            return {'error': str(e)}
+    
+    def limpiar_cache_expirado(self) -> int:
+        """Limpia entradas expiradas del cache y devuelve el número de entradas eliminadas"""
+        try:
+            ahora = datetime.now()
+            keys_to_delete = []
+            
+            for key, entry in self._cache.items():
+                if ahora - entry['timestamp'] >= self._cache_ttl:
+                    keys_to_delete.append(key)
+            
+            for key in keys_to_delete:
+                del self._cache[key]
+            
+            logger.info(f"Cache limpiado: {len(keys_to_delete)} entradas expiradas eliminadas")
+            return len(keys_to_delete)
+        except Exception as e:
+            logger.warning(f"Error limpiando cache: {str(e)}")
+            return 0

@@ -12,6 +12,11 @@
 - 🔌 **Servidor MCP 100% oficial** - Compatible con Claude Code
 - 🏛️ **API oficial del Catastro** - Endpoints WCF del gobierno español  
 - 🏢 **División horizontal** - Consulta parcelas con múltiples inmuebles
+- 🗺️ **Geometrías WFS** - Polígonos precisos de parcelas ✨ **NUEVO**
+- 🏘️ **MetaParcelas** - Parcelas con múltiples referencias ✨ **NUEVO**
+- 📄 **Export GeoJSON** - Compatible con aplicaciones de mapas ✨ **NUEVO**
+- 🗂️ **15 Herramientas MCP** - Suite completa de consultas catastrales
+- 🚀 **Sistema de Cache** - Optimización automática de consultas frecuentes
 - 🧠 **Resúmenes IA** con OpenAI o simulación local
 - 🔍 **Validación completa** - Referencias de 14 y 20 caracteres
 - 📍 **Consultas por coordenadas** - Localización GPS precisa
@@ -83,6 +88,10 @@ claude --mcp-config claude-config.json
 
 ## 🛠️ Herramientas MCP Disponibles
 
+### 🎯 **15 Herramientas Profesionales** - ✅ **Completo**
+
+### **📊 CONSULTAS BÁSICAS**
+
 ### 1. 🏠 `consultar_catastro_por_referencia`
 Consulta **inmueble específico** por referencia catastral de 20 caracteres.
 
@@ -97,7 +106,7 @@ Consulta **inmueble específico** por referencia catastral de 20 caracteres.
 ---
 
 ### 2. 🏢 `consultar_parcela_por_codigo` 
-**¡NUEVA!** Consulta **parcelas con división horizontal** usando código de 14 caracteres.
+Consulta **parcelas con división horizontal** usando código de 14 caracteres.
 
 ```json
 {
@@ -123,7 +132,140 @@ Localiza inmuebles por **coordenadas GPS**.
 
 ---
 
-### 4. ✅ `validar_referencia_catastral`
+### **🗺️ LISTADOS Y NAVEGACIÓN**
+
+### 4. 🏛️ `listar_provincias`
+Obtiene la **lista completa de provincias** de España desde la API oficial.
+
+```json
+{}
+```
+
+**Devuelve:** 52 provincias españolas con nombres oficiales.
+
+---
+
+### 5. 🏘️ `listar_municipios`
+Lista **municipios de una provincia** con búsqueda parcial opcional.
+
+```json
+{
+  "provincia": "Granada",
+  "municipio_parcial": "B"
+}
+```
+
+**Devuelve:** Municipios que coinciden con el filtro (ej: BAZA, BENALUA, etc.).
+
+---
+
+### 6. 🛣️ `listar_calles`
+Obtiene **todas las calles** de un municipio específico.
+
+```json
+{
+  "provincia": "Granada",
+  "municipio": "Baza"
+}
+```
+
+**Devuelve:** Lista completa del callejero municipal.
+
+---
+
+### **🔄 CONVERSIONES GEOESPACIALES**
+
+### 7. 📍➡️📋 `convertir_coordenadas_a_referencia`
+Convierte **coordenadas GPS** a **referencia catastral**.
+
+```json
+{
+  "latitud": 40.4168,
+  "longitud": -3.7038,
+  "sistema_referencia": "EPSG:4326"
+}
+```
+
+**Devuelve:** Referencia catastral del punto + validación.
+
+---
+
+### 8. 📋➡️📍 `convertir_referencia_a_coordenadas`
+Convierte **referencia catastral** a **coordenadas GPS**.
+
+```json
+{
+  "referencia": "4418928VG4141G0001IW",
+  "sistema_referencia": "EPSG:4326"
+}
+```
+
+**Devuelve:** Coordenadas precisas del centroide de la parcela.
+
+---
+
+### 9. 🌐 `geocodificar_direccion`
+Convierte **direcciones en texto** a coordenadas usando CartoCiudad.
+
+```json
+{
+  "direccion": "Gran Vía 1",
+  "municipio": "Madrid"
+}
+```
+
+**Devuelve:** Coordenadas + referencia catastral desde el IGN.
+
+---
+
+### **🔧 FUNCIONALIDADES AVANZADAS** ✨ **NUEVAS**
+
+### 10. 🗺️ `obtener_geometria_parcela` ✨
+Obtiene **geometría completa** de parcelas usando servicios WFS del Catastro.
+
+```json
+{
+  "referencia": "4418928VG4141G0001IW",
+  "sistema_referencia": "EPSG:4326"
+}
+```
+
+**Devuelve:** Polígono de la parcela, centroide, superficie calculada, coordenadas precisas.
+
+---
+
+### 11. 🏘️ `consultar_metaparcela` ✨
+Consulta **parcelas con múltiples referencias catastrales** (MetaParcelas).
+
+```json
+{
+  "provincia": "Madrid",
+  "municipio": "Madrid",
+  "poligono": 1,
+  "parcela": 1
+}
+```
+
+**Devuelve:** Información completa de todas las parcelas que componen la MetaParcela + geometrías.
+
+---
+
+### 12. 📄 `exportar_geometria_geojson` ✨
+Exporta geometrías de parcelas en **formato GeoJSON estándar**.
+
+```json
+{
+  "referencia": "4418928VG4141G0001IW"
+}
+```
+
+**Devuelve:** GeoJSON compatible con Leaflet, OpenLayers, QGIS, y otras aplicaciones de mapas.
+
+---
+
+### **🛠️ HERRAMIENTAS DE SOPORTE**
+
+### 13. ✅ `validar_referencia_catastral`
 Valida y analiza referencias catastrales (14 o 20 caracteres).
 
 ```json
@@ -132,11 +274,11 @@ Valida y analiza referencias catastrales (14 o 20 caracteres).
 }
 ```
 
-**Devuelve:** Análisis detallado, componentes (provincia, municipio, sector), estado de validez, guía para completar.
+**Devuelve:** Análisis detallado, componentes, estado de validez, guía para completar.
 
 ---
 
-### 5. 🧠 `generar_resumen_ia`
+### 14. 🧠 `generar_resumen_ia`
 Genera resumen profesional usando IA.
 
 ```json
@@ -151,7 +293,7 @@ Genera resumen profesional usando IA.
 
 ---
 
-### 6. ℹ️ `buscar_catastro_por_direccion`
+### 15. ℹ️ `buscar_catastro_por_direccion`
 Herramienta informativa sobre limitaciones de búsqueda por dirección.
 
 ```json
@@ -427,7 +569,16 @@ git push origin feature/nueva-funcionalidad
 
 ## 📝 Changelog
 
-### 🆕 **v3.0.0 - División Horizontal** (Actual)
+### 🆕 **v4.0.0 - Funcionalidades Avanzadas** (Actual)
+- ✨ **NUEVAS:** 3 herramientas avanzadas (`obtener_geometria_parcela`, `consultar_metaparcela`, `exportar_geometria_geojson`)
+- ✨ **Geometrías WFS** - Polígonos precisos y centroides de parcelas
+- ✨ **MetaParcelas** - Soporte completo para parcelas con múltiples referencias
+- ✨ **Export GeoJSON** - Compatible con aplicaciones de mapas profesionales
+- ✨ **Sistema de Cache** - Optimización automática (24h TTL)
+- ✅ **15 Herramientas MCP** - Suite completa y profesional
+- ✅ **Documentación actualizada** - Guías y casos de uso avanzados
+
+### 📊 **v3.0.0 - División Horizontal**
 - ✅ **Nueva herramienta:** `consultar_parcela_por_codigo`
 - ✅ **Soporte completo** para parcelas con múltiples inmuebles
 - ✅ **Estructura dual** - Manejo 14 y 20 caracteres
