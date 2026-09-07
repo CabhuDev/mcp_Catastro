@@ -11,12 +11,12 @@ Servidor MCP completamente limpio y funcional para consultas al **Catastro de Es
 ### **1. Instalar dependencias:**
 ```powershell
 cd C:\Users\Pablo\Desktop\obratec_app\mcp_catastro
-pip install -r requirements.txt
+uv sync --locked
 ```
 
 ### **2. Ejecutar servidor MCP:**
 ```powershell
-python mcp_server.py
+uv run --locked python mcp_server.py
 ```
 
 ### **3. Configurar Claude Code:**
@@ -25,7 +25,7 @@ python mcp_server.py
 claude --mcp-config claude-config.json
 
 # O configuración directa
-claude --mcp-config '{"mcpServers":{"catastro":{"command":"python","args":["C:\\Users\\Pablo\\Desktop\\obratec_app\\mcp_catastro\\mcp_server.py"],"transport":"stdio"}}}'
+claude --mcp-config claude-config.json
 ```
 
 ---
@@ -62,10 +62,10 @@ Entrada: referencia a validar
 
 ```powershell
 # Probar conectividad con Catastro
-python scripts/test-connection.py
+uv run --locked python tests/test-startup.py
 
 # Tests unitarios
-pytest tests/ -v
+uv run --locked pytest -q
 ```
 
 ---
@@ -74,8 +74,9 @@ pytest tests/ -v
 
 Crea `.env` desde `.env.example` para:
 - Configurar OpenAI API key (para IA real)
-- Ajustar timeouts y rate limits
+- Ajustar timeouts y reintentos
 - Habilitar debug mode
+- Mantener ocultos los datos sensibles en logs por defecto
 
 ---
 
@@ -88,10 +89,10 @@ mcp_catastro/
 ├── 📊 models/                # Modelos de datos
 ├── ⚙️ config/                # Configuración
 ├── 🧪 tests/                 # Tests
-├── 🛠️ scripts/               # Utilidades
 ├── 📖 docs/                  # Documentación
 ├── 📄 claude-config.json     # Config Claude Code
-└── 📋 requirements.txt       # Dependencias mínimas
+├── 📋 pyproject.toml          # Dependencias directas
+└── 🔒 uv.lock                 # Dependencias bloqueadas
 ```
 
 ---
@@ -109,7 +110,7 @@ mcp_catastro/
 
 ## 🎉 **¡Listo para usar con Claude Code!**
 
-1. `pip install -r requirements.txt`
-2. `python mcp_server.py`  
+1. `uv sync --locked`
+2. `uv run --locked python mcp_server.py`
 3. `claude --mcp-config claude-config.json`
 4. Pregunta a Claude sobre cualquier referencia catastral

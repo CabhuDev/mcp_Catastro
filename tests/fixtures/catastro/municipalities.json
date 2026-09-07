@@ -1,0 +1,22 @@
+{
+  "consulta_municipieroResult": {
+    "control": {
+      "cumun": 1
+    },
+    "municipiero": {
+      "muni": [
+        {
+          "locat": {
+            "cd": "18",
+            "cmc": "22"
+          },
+          "loine": {
+            "cp": "18",
+            "cm": "21"
+          },
+          "nm": "ARMILLA"
+        }
+      ]
+    }
+  }
+}

@@ -199,3 +199,6 @@ $RECYCLE.BIN/
 test_*.py
 debug_*.py
 scratch.py
+
+# Keep the project's automated test suite under version control.
+!tests/test_*.py

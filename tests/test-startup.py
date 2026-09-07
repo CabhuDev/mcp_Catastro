@@ -126,8 +126,8 @@ def main():
         print("🎉 ¡TODO FUNCIONA CORRECTAMENTE!")
         print("   Tu servidor MCP está listo para Claude Code")
         print("\n🔥 Siguientes pasos:")
-        print("   1. pip install -r requirements.txt")
-        print("   2. python mcp_server.py")
+        print("   1. uv sync --locked")
+        print("   2. uv run --locked python mcp_server.py")
         print("   3. claude --mcp-config claude-config.json")
         return 0
     else:

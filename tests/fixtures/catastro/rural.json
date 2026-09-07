@@ -1,0 +1,140 @@
+{
+  "consulta_dnprcResult": {
+    "control": {
+      "cudnp": 1,
+      "cucons": 3,
+      "cucul": 1
+    },
+    "bico": {
+      "bi": {
+        "idbi": {
+          "cn": "RU",
+          "rc": {
+            "pc1": "13077A0",
+            "pc2": "1800039",
+            "car": "0000",
+            "cc1": "M",
+            "cc2": "S"
+          }
+        },
+        "dt": {
+          "loine": {
+            "cp": "13",
+            "cm": "77"
+          },
+          "cmc": "77",
+          "np": "CIUDAD REAL",
+          "nm": "SANTA CRUZ DE MUDELA",
+          "locs": {
+            "lors": {
+              "lorus": {
+                "czc": "0",
+                "cpp": {
+                  "cpo": "18",
+                  "cpa": "39"
+                },
+                "npa": "EL TIRADERO",
+                "cpaj": "26"
+              },
+              "lourb": {
+                "dir": {
+                  "cv": "139",
+                  "tv": "DS",
+                  "nv": "DISEMINADO",
+                  "pnp": "0",
+                  "td": "000100200VH67C"
+                },
+                "loint": {},
+                "dp": "13730",
+                "dm": "3"
+              }
+            }
+          }
+        },
+        "ldt": "DS DISEMINADO  Polígono 18 Parcela 39 000100200VH67C EL TIRADERO. 13730 SANTA CRUZ DE MUDELA (CIUDAD REAL)",
+        "debi": {
+          "luso": "Agrario",
+          "sfc": "161",
+          "ant": "1990"
+        }
+      },
+      "finca": {
+        "ldt": "DS DISEMINADO  Polígono 18 Parcela 39 000100200VH67C  EL TIRADERO. SANTA CRUZ DE MUDELA (CIUDAD REAL)",
+        "ltp": "Parcela construida sin división horizontal",
+        "dff": {
+          "ss": "36294"
+        },
+        "infgraf": {
+          "igraf": "https://www1.sedecatastro.gob.es/Cartografia/mapa.aspx?del=13&mun=77&refcat=13077A01800039"
+        }
+      },
+      "lcons": [
+        {
+          "lcd": "AGRARIO",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "1",
+                "pt": "00",
+                "pu": "01"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "40"
+          },
+          "dvcons": {
+            "dtip": "INDUSTRIA NO FABRIL"
+          }
+        },
+        {
+          "lcd": "VIVIENDA",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "2",
+                "pt": "00",
+                "pu": "01"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "81"
+          },
+          "dvcons": {
+            "dtip": "VIVIENDA UNIFAMILIAR"
+          }
+        },
+        {
+          "lcd": "PORCHE 100%",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "2",
+                "pt": "00",
+                "pu": "02"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "40"
+          },
+          "dvcons": {
+            "dtip": "ANEJOS DE VIVIENDA Y LOCALES EN ESTRUCTURA"
+          }
+        }
+      ],
+      "lspr": [
+        {
+          "cspr": "0",
+          "dspr": {
+            "ccc": "O-",
+            "dcc": "OLIVOS SECANO",
+            "ip": "02",
+            "ssp": "36133"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<consulta_dnp xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.catastro.meh.es/">
+  <control>
+    <cudnp>1</cudnp>
+    <cucons>2</cucons>
+    <cucul>0</cucul>
+  </control>
+  <bico>
+    <bi>
+      <idbi>
+        <cn>UR</cn>
+        <rc>
+          <pc1>4611123</pc1>
+          <pc2>VG4141B</pc2>
+          <car>0013</car>
+          <cc1>R</cc1>
+          <cc2>S</cc2>
+        </rc>
+      </idbi>
+      <dt>
+        <loine>
+          <cp>18</cp>
+          <cm>21</cm>
+        </loine>
+        <cmc>22</cmc>
+        <np>GRANADA</np>
+        <nm>ARMILLA</nm>
+        <locs>
+          <lous>
+            <lourb>
+              <dir>
+                <cv>182</cv>
+                <tv>CL</tv>
+                <nv>REYES CATOLICOS</nv>
+                <pnp>6</pnp>
+              </dir>
+              <loint>
+                <es>1</es>
+                <pt>00</pt>
+                <pu>A</pu>
+              </loint>
+              <dp>18100</dp>
+              <dm>1</dm>
+            </lourb>
+          </lous>
+        </locs>
+      </dt>
+      <ldt>CL REYES CATOLICOS 6 Es:1 Pl:00 Pt:A 18100 ARMILLA (GRANADA)</ldt>
+      <debi>
+        <luso>Residencial</luso>
+        <sfc>52</sfc>
+        <cpt>4,471000</cpt>
+        <ant>2008</ant>
+      </debi>
+    </bi>
+    <lcons>
+      <cons>
+        <lcd>VIVIENDA</lcd>
+        <dt>
+          <lourb>
+            <loint>
+              <es>1 </es>
+              <pt>00 </pt>
+              <pu>A  </pu>
+            </loint>
+          </lourb>
+        </dt>
+        <dfcons>
+          <stl>46</stl>
+        </dfcons>
+      </cons>
+      <cons>
+        <lcd>ELEMENTOS COMUNES</lcd>
+        <dfcons>
+          <stl>6</stl>
+        </dfcons>
+      </cons>
+    </lcons>
+  </bico>
+</consulta_dnp>

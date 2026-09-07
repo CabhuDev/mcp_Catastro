@@ -1,0 +1,23 @@
+{
+  "Consulta_RCCOORResult": {
+    "control": {
+      "cucoor": 1
+    },
+    "coordenadas": {
+      "coord": [
+        {
+          "pc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S"
+          },
+          "geo": {
+            "xcen": "3.14946484974333",
+            "ycen": "41.9252415752936",
+            "srs": "EPSG:4326"
+          },
+          "ldt": "LG SUD-1.11 LA FANGA PALAFRUGELL (GIRONA)"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "consulta_dnprcResult": {
+    "control": {
+      "cudnp": 7
+    },
+    "lrcdnp": {
+      "rcdnp": [
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0001",
+            "cc1": "K",
+            "cc2": "J"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "00",
+                    "pu": "1"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "6.863",
+            "cpt": "25,120000",
+            "ant": "2013"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0002",
+            "cc1": "L",
+            "cc2": "K"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "01",
+                    "pu": "1"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "3.449",
+            "cpt": "13,900000",
+            "ant": "2013"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0003",
+            "cc1": "B",
+            "cc2": "L"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "2",
+                    "pt": "00",
+                    "pu": "1"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "987",
+            "cpt": "3,000000",
+            "ant": "2013"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0004",
+            "cc1": "Z",
+            "cc2": "B"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "2",
+                    "pt": "00",
+                    "pu": "2"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "422",
+            "cpt": "1,590000",
+            "ant": "2013"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0005",
+            "cc1": "X",
+            "cc2": "Z"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "2",
+                    "pt": "00",
+                    "pu": "3"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "6.361",
+            "cpt": "28,540000",
+            "ant": "2013"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0006",
+            "cc1": "M",
+            "cc2": "X"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "2",
+                    "pt": "01",
+                    "pu": "4"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "1.967",
+            "cpt": "8,450000",
+            "ant": "2013"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "2314501",
+            "pc2": "EG1421S",
+            "car": "0007",
+            "cc1": "Q",
+            "cc2": "M"
+          },
+          "dt": {
+            "loine": {
+              "cp": "17",
+              "cm": "117"
+            },
+            "cmc": "124",
+            "np": "GIRONA",
+            "nm": "PALAFRUGELL",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "9029",
+                    "tv": "LG",
+                    "nv": "SUD-1.11 LA FANGA"
+                  },
+                  "loint": {
+                    "es": "2",
+                    "pt": "01",
+                    "pu": "5"
+                  },
+                  "dm": "3"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Comercial",
+            "sfc": "4.514",
+            "cpt": "19,400000",
+            "ant": "2013"
+          }
+        }
+      ]
+    }
+  }
+}

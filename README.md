@@ -1,481 +1,111 @@
-# 🏠 MCP Catastro España - Servidor MCP Oficial
+# MCP Catastro España
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![MCP Compatible](https://img.shields.io/badge/MCP-compatible-green.svg)](https://modelcontextprotocol.io/)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-purple.svg)](https://claude.ai/code)
-[![Catastro España](https://img.shields.io/badge/Catastro-España-red.svg)](https://sede.catastro.gob.es/)
+Servidor MCP comunitario para consultar datos públicos de la Dirección General del Catastro. Este es el fork de [Báculum](https://github.com/baculummayores/mcp_catastro), basado en el trabajo de [CabhuDev](https://github.com/CabhuDev/mcp_Catastro). No es un servidor oficial del Gobierno.
 
-**Servidor MCP (Model Context Protocol) profesional** para consultas al **Catastro de España** con capacidades de IA. Diseñado específicamente para **Claude Code** usando endpoints oficiales del gobierno español.
+Python 3.14, MCP Python SDK 2.x, transporte stdio. Versión de aplicación y contrato: **2.0.0**.
 
-## ✨ Características Principales
+## Instalación
 
-- 🔌 **Servidor MCP 100% oficial** - Compatible con Claude Code
-- 🏛️ **API oficial del Catastro** - Endpoints WCF del gobierno español  
-- 🏢 **División horizontal** - Consulta parcelas con múltiples inmuebles
-- 🧠 **Resúmenes IA** con OpenAI o simulación local
-- 🔍 **Validación completa** - Referencias de 14 y 20 caracteres
-- 📍 **Consultas por coordenadas** - Localización GPS precisa
-- ⚡ **Dependencias mínimas** - Solo 6 librerías esenciales
-
----
-
-## 🏗️ Arquitectura del Proyecto
-
-```
-mcp_catastro/
-├── 🚀 mcp_server.py              # Servidor MCP principal
-├── 📄 claude-config.json         # Configuración Claude Code
-├── 🔧 services/
-│   ├── catastro_service.py       # API oficial del Catastro
-│   ├── ai_summary.py             # Sistema de IA integrado
-│   └── __init__.py
-├── 📊 models/
-│   ├── catastro_models.py        # Modelos Pydantic + validación
-│   └── __init__.py
-├── ⚙️ config/
-│   ├── settings.py               # Configuración centralizada
-│   └── __init__.py
-├── 🧪 tests/                     # Tests automatizados
-├── 📖 docs/                      # Documentación completa
-├── 📄 Guia_Completa_API_Catastro.md  # Documentación API oficial
-├── 📋 requirements.txt           # 6 dependencias esenciales
-└── 🛠️ setup-env.ps1              # Script configuración automática
+```sh
+uv sync --locked
+uv run --locked python mcp_server.py
 ```
 
----
+OpenAI es opcional: `uv sync --locked --extra openai`. El servidor no necesita una clave para buscar por dirección, coordenadas, referencia o parcela. `uv.lock` es la resolución de dependencias utilizada por instalación y CI.
 
-## 🚀 Instalación Rápida
+## Herramientas
 
-### 📋 Prerrequisitos
+| Herramienta | Entrada | Resultado |
+|---|---|---|
+| `consultar_catastro_por_referencia` | Referencia de 20 caracteres | Inmueble, dirección completa, construcciones y superficie de parcela cuando constan |
+| `consultar_parcela_por_codigo` | Código de 14 caracteres | Lista de inmuebles, incluidos los casos sin división horizontal |
+| `consultar_catastro_por_coordenadas` | Latitud/longitud WGS84 | Parcelas localizadas e inmuebles candidatos; no elige una planta o puerta |
+| `buscar_catastro_por_direccion` | Campos de dirección o texto | Callejero y candidatos; permite filtrar escalera, planta y puerta |
+| `validar_referencia_catastral` | Código de 14 o referencia de 20 caracteres | Formato, control y tipo; no confirma existencia |
+| `generar_resumen_ia` | Referencia, idioma `es/en/ca`, `usar_openai` | Resumen, método real y motivo de degradación si lo hay |
 
-- **Python 3.11+**
-- **Claude Code** instalado
-- **Windows/Linux/macOS**
+Las cuatro herramientas de consulta admiten `incluir_raw=true` para diagnóstico. Por defecto no duplican las respuestas originales. El recurso `catastro://api/info` informa del contrato, límites y revisión desplegada (`CATASTRO_REVISION`).
 
-### ⚡ Setup Automático (Windows)
-
-```powershell
-# Clonar el repositorio
-git clone https://github.com/CabhuDev/mcp_Catastro.git
-cd mcp_Catastro
-
-# Ejecutar setup automático
-.\setup-env.ps1
-
-# Configurar Claude Code
-claude --mcp-config claude-config.json
-```
-
-### 🔧 Setup Manual
-
-```bash
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Ejecutar servidor MCP
-python mcp_server.py
-
-# En otra terminal, configurar Claude Code
-claude --mcp-config claude-config.json
-```
-
----
-
-## 🛠️ Herramientas MCP Disponibles
-
-### 1. 🏠 `consultar_catastro_por_referencia`
-Consulta **inmueble específico** por referencia catastral de 20 caracteres.
+### Búsqueda por dirección
 
 ```json
 {
-  "referencia": "2314501EG1421S0001KJ"
+  "provincia": "GRANADA",
+  "municipio": "ARMILLA",
+  "tipo_via": "CL",
+  "nombre_via": "REYES CATOLICOS",
+  "numero": "6"
 }
 ```
 
-**Devuelve:** Uso, superficie, año construcción, dirección completa, provincia, municipio.
+En la prueba del 7 de septiembre de 2026 devuelve 22 inmuebles. Para uno concreto, añadir `escalera: "1"`, `planta: "00"`, `puerta: "A"`; también admite `bloque`. Los nombres se resuelven contra el callejero oficial. Si hay varios municipios o vías compatibles, devuelve `candidatos` para elegir; si falta número, lo solicita sin consultar todos los inmuebles de la calle.
 
----
+Se conserva `direccion_completa`, por ejemplo `CALLE REYES CATOLICOS 6, 18100, ARMILLA, GRANADA`. Los campos explícitos prevalecen sobre el texto. El código postal del texto no se usa como filtro: la consulta se resuelve con provincia, municipio, vía y número. Para nombres con comas u otros formatos ambiguos, usar campos estructurados.
 
-### 2. 🏢 `consultar_parcela_por_codigo` 
-**¡NUEVA!** Consulta **parcelas con división horizontal** usando código de 14 caracteres.
+### Coordenadas y cobertura
 
 ```json
-{
-  "codigo_parcela": "2314501EG1421S"
-}
+{"latitud": 41.9252415752936, "longitud": 3.14946484974333}
 ```
 
-**Devuelve:** Lista completa de todos los inmuebles en la parcela, coeficientes de participación, escaleras, plantas, puertas.
+Este punto devuelve la parcela `2314501EG1421S`, con siete inmuebles en la prueba. La coordenada de entrada no identifica planta ni puerta. Un punto en una plaza o calzada puede no tener referencia. Se admiten Canarias y coordenadas geográficas válidas; la disponibilidad depende de la DGC. País Vasco y Navarra tienen catastros propios y no se integran aquí. El rectángulo geográfico de entrada no garantiza cobertura del proveedor.
 
----
+## Contrato de respuesta y migración desde 1.x
 
-### 3. 📍 `consultar_catastro_por_coordenadas`
-Localiza inmuebles por **coordenadas GPS**.
+Cambio incompatible de contrato, manteniendo los seis nombres de herramientas:
 
-```json
-{
-  "latitud": 41.915,
-  "longitud": 3.165
-}
+- Leer `inmuebles[]`, `total_inmuebles`, `requiere_seleccion` y `tipo_resultado`. La lista ya no está escondida dentro de `datos_raw` ni de `mensaje_error`.
+- `datos_basicos` y `direccion` de primer nivel solo se rellenan si hay un inmueble. `superficie_parcela` es el área total de la parcela, **no** la cuota de suelo atribuible a un piso.
+- `estado_consulta`: `exitosa`, `sin_datos`, `requiere_seleccion`, `error_formato` o `error`. Los fallos funcionales se devuelven en este campo aunque MCP tenga `isError=false`; los errores de esquema MCP pueden tener `isError=true`.
+- `codigo_error` y `errores_origen` conservan errores de Catastro. Por ejemplo, 16 significa ausencia de referencia en un punto; 76 es un parámetro de coordenadas obligatorio ausente. No se tratan igual.
+- `datos_raw` es opcional. Los códigos territoriales se obtienen de la respuesta y distinguen INE y Catastro; no se deducen de referencias urbanas.
+- El validador acepta códigos de parcela como utilizables; para referencias completas verifica control módulo 23. `existencia_confirmada=null` expresa que la validación local no consulta al proveedor. Las formas especiales no se fuerzan al patrón urbano/rústico. Admite espacios/guiones de presentación.
+- El resumen devuelve un objeto con `resumen`, `metodo_usado`, `modelo_usado`, `motivo_degradacion` y `estado`. Si falta clave/dependencia o falla OpenAI, declara la plantilla y la causa. Los datos no permiten afirmar titularidad, valor, conservación o protección histórica.
+
+Para un asistente que ya puede redactar, suele bastar con las herramientas de datos. El resumen se mantiene como opción; la caché evita repetir inmediatamente una consulta idéntica.
+
+## Configuración
+
+| Variable | Predeterminado | Uso |
+|---|---|---|
+| `CATASTRO_CATASTRO_BASE_URL` | `https://ovc.catastro.meh.es` | API de Catastro |
+| `CATASTRO_CATASTRO_TIMEOUT` | `30` | Timeout HTTP en segundos |
+| `CATASTRO_TOTAL_TIMEOUT` | `30` | Presupuesto completo por búsqueda, con cola y reintentos |
+| `CATASTRO_CATASTRO_MAX_RETRIES` | `3` | Reintentos adicionales de transporte o HTTP transitorio |
+| `CATASTRO_CATASTRO_RETRY_DELAY` | `1` | Espera exponencial inicial; respeta `Retry-After` dentro del presupuesto |
+| `CATASTRO_MAX_CONCURRENCY` | `4` | Peticiones HTTP simultáneas por proceso |
+| `CATASTRO_CACHE_TTL` | `60` | Caché de consultas, segundos; cero desactiva |
+| `CATASTRO_CATALOGUE_CACHE_TTL` | `3600` | Caché de callejero, segundos |
+| `CATASTRO_CACHE_SIZE` | `128` | Máximo de entradas por proceso; cero desactiva |
+| `CATASTRO_REVISION` | `desconocida` | SHA del artefacto desplegado, suministrado por despliegue |
+| `CATASTRO_OPENAI_API_KEY` | sin clave | Integración opcional |
+| `CATASTRO_OPENAI_MODEL` | `gpt-4` | Modelo configurable |
+| `CATASTRO_OPENAI_MAX_TOKENS` | `500` | Longitud máxima del resumen remoto |
+| `CATASTRO_OPENAI_TEMPERATURE` | `0.3` | Parámetro del modelo configurado |
+| `CATASTRO_LOG_LEVEL` | `INFO` | Logging operativo en stderr |
+| `CATASTRO_LOG_SENSITIVE_DATA` | `false` | Datos sensibles solo si además el nivel es DEBUG |
+
+Se reintentan HTTP 429/500/502/503/504 y fallos de transporte; no errores funcionales ni respuestas mal formadas. El resumen opcional dispone de un presupuesto adicional `CATASTRO_TOTAL_TIMEOUT` para OpenAI, después de consultar Catastro. La caché es local, temporal y acotada; no almacena errores del proveedor. No hay una cuota global de 60 peticiones/minuto ni caché compartida entre procesos.
+
+## Pruebas y despliegue
+
+```sh
+uv run --locked pytest -q
+uv run --locked black --check mcp_server.py smoke_catastro.py config models services tests/test_*.py
+uv run --locked isort --check-only mcp_server.py smoke_catastro.py config models services tests/test_*.py
+uv run --locked python smoke_catastro.py
 ```
 
-**Devuelve:** Referencia catastral del inmueble en esas coordenadas + datos completos.
+`pytest` usa respuestas públicas guardadas y mocks, sin red. Los antiguos `tests/test-*.py` son scripts manuales históricos; no forman parte de la suite. `smoke_catastro.py` prueba las seis herramientas mediante un cliente MCP en memoria y llama a Catastro real; no llama a OpenAI y no se ejecuta automáticamente en CI. Se ejecuta sobre **el código local**, por lo que no certifica el conector remoto.
 
----
+Tras desplegar: configurar `CATASTRO_REVISION` con el SHA, refrescar las herramientas del cliente MCP y comprobar el recurso de información remoto; repetir allí referencia, parcela única, coordenadas y dirección con/sin filtro. Esta PR no realiza el despliegue.
 
-### 4. ✅ `validar_referencia_catastral`
-Valida y analiza referencias catastrales (14 o 20 caracteres).
+## Fuentes y diagnóstico
 
-```json
-{
-  "referencia": "2314501EG1421S"
-}
-```
+- [Contrato oficial de coordenadas WCF](https://ovc.catastro.meh.es/OVCServWeb/OVCWcfCallejero/COVCCoordenadas.svc/json/help/operations/Consulta_RCCOOR).
+- [Contrato de dirección WCF](https://ovc.catastro.meh.es/OVCServWeb/OVCWcfCallejero/COVCCallejero.svc/json/help/operations/consulta_dnploc).
+- [Servicios libres del Catastro](https://www.catastro.hacienda.gob.es/ws/Webservices_Libres.pdf).
+- [Referencia urbana y rústica](https://www.catastro.hacienda.gob.es/es-ES/referencia_catastral.html).
+- [Auditoría previa a estas correcciones](docs/AUDITORIA_FUNCIONAL_2026-09-07.md).
 
-**Devuelve:** Análisis detallado, componentes (provincia, municipio, sector), estado de validez, guía para completar.
-
----
-
-### 5. 🧠 `generar_resumen_ia`
-Genera resumen profesional usando IA.
-
-```json
-{
-  "referencia": "2314501EG1421S0001KJ",
-  "usar_openai": false,
-  "idioma": "es"
-}
-```
-
-**Devuelve:** Resumen estructurado, puntos clave, valoración profesional.
-
----
-
-### 6. ℹ️ `buscar_catastro_por_direccion`
-Herramienta informativa sobre limitaciones de búsqueda por dirección.
-
-```json
-{
-  "direccion_completa": "CALLE REYES CATOLICOS 6, 18100, ARMILLA, GRANADA"
-}
-```
-
-**Devuelve:** Explicación de limitaciones + alternativas funcionales.
-
----
-
-## 🎯 Casos de Uso Reales
-
-### 🏢 Consulta de Edificio Comercial
-
-**Entrada:** `2314501EG1421S` (código de parcela)
-
-**Resultado:**
-```
-PARCELA CON DIVISION HORIZONTAL ENCONTRADA
-
-Codigo de parcela: 2314501EG1421S
-Inmuebles encontrados: 7
-
-INMUEBLES EN LA PARCELA:
-
-1. INMUEBLE 0001: 6.863 m² - Comercial - Escalera 1, Planta 00, Puerta 1
-2. INMUEBLE 0002: 3.449 m² - Comercial - Escalera 1, Planta 01, Puerta 1  
-3. INMUEBLE 0003: 987 m² - Comercial - Escalera 2, Planta 00, Puerta 1
-4. INMUEBLE 0004: 422 m² - Comercial - Escalera 2, Planta 00, Puerta 2
-5. INMUEBLE 0005: 6.361 m² - Comercial - Escalera 2, Planta 00, Puerta 3
-6. INMUEBLE 0006: 1.967 m² - Comercial - Escalera 2, Planta 01, Puerta 4
-7. INMUEBLE 0007: 4.514 m² - Comercial - Escalera 2, Planta 01, Puerta 5
-
-Ubicación: LG SUD-1.11 LA FANGA, PALAFRUGELL (GIRONA)
-Año construcción: 2013
-```
-
----
-
-## 🔌 API Oficial del Catastro
-
-### ✅ **Endpoints Implementados**
-
-| Método | Endpoint Oficial | Uso |
-|--------|-----------------|-----|
-| `CONSULTA_DNPRC` | `/OVCServWeb/OVCWcfCallejero/COVCCallejero.svc/json/Consulta_DNPRC` | Referencias 14/20 chars |
-| `CONSULTA_RCCOOR` | `/OVCServWeb/OVCWcfCoord/COVCCoordenadas.svc/json/Consulta_RCCOOR` | Coordenadas GPS |
-
-### 🔄 **Características Técnicas**
-
-- ✅ **JSON nativo** - Respuestas JSON del Catastro
-- ✅ **Fallback XML** - Compatibilidad total
-- ✅ **Reintentos automáticos** - Manejo robusto de errores
-- ✅ **Rate limiting** - 60 consultas/minuto
-- ✅ **Timeout configurable** - 30 segundos por defecto
-
----
-
-## 🧠 Sistema de IA Avanzado
-
-### 🎭 **Modo Simulado** (Gratis)
-- ✅ **Sin coste** ni dependencias externas
-- 🚀 **Respuesta instantánea**
-- 📊 **Análisis automático** de datos catastrales
-- 🌍 **Multiidioma** (español, inglés, catalán)
-
-### 🧮 **Modo OpenAI** (Opcional)
-- 🔑 Requiere API key de OpenAI
-- 🧠 **Análisis profesional** avanzado
-- 💰 Coste por consulta
-- 🎯 **Mayor precisión** y contexto
-
-### 📝 **Ejemplo de Resumen IA**
-
-```markdown
-📋 RESUMEN PROFESIONAL CATASTRAL
-
-Referencia: 2314501EG1421S0001KJ
-Tipo: Local comercial contemporáneo
-Superficie: 6.863 m²
-Antigüedad: 11 años (2013)
-Ubicación: Zona comercial de Palafrugell, Costa Brava
-
-🏢 CARACTERÍSTICAS:
-- Superficie amplia para actividad comercial
-- Planta baja con fácil acceso
-- Construcción reciente en buen estado
-- Zona turística con alto tránsito
-
-💡 VALORACIÓN:
-Inmueble comercial bien ubicado en zona de interés turístico.
-Superficie adecuada para comercio especializado.
-```
-
----
-
-## 📋 Referencias Catastrales Españolas
-
-### ✅ **Formato 20 Caracteres (Completo)**
-```
-2314501EG1421S0001KJ
-├─────────┤├─┤├──┤├──┤├┤
-│         │ │ │   │   └── 2 letras: Control
-│         │ │ │   └────── 4 dígitos: Subparcela
-│         │ │ └────────── 4 caracteres: Parcela
-│         │ └─────────── 3 caracteres: Manzana
-│         └──────────── 2 dígitos: Sector
-└─────────────────────── 7 caracteres: Provincia+Municipio
-```
-
-### ✅ **Formato 14 Caracteres (Parcela)**
-```
-2314501EG1421S
-├─────────┤├─┤├──┤
-│         │ │ └────── 4 caracteres: Parcela
-│         │ └─────── 3 caracteres: Manzana  
-│         └──────── 2 dígitos: Sector
-└───────────────── 7 caracteres: Provincia+Municipio
-```
-
----
-
-## ⚙️ Configuración Avanzada
-
-### 📊 **Variables de Entorno**
-
-| Variable | Descripción | Valor por defecto |
-|----------|-------------|-------------------|
-| `CATASTRO_DEBUG` | Modo debug detallado | `false` |
-| `CATASTRO_LOG_LEVEL` | Nivel de logging | `INFO` |
-| `CATASTRO_TIMEOUT` | Timeout API (segundos) | `30` |
-| `CATASTRO_MAX_REQUESTS_PER_MINUTE` | Rate limit | `60` |
-| `CATASTRO_OPENAI_API_KEY` | Clave OpenAI (opcional) | `None` |
-| `CATASTRO_OPENAI_MODEL` | Modelo OpenAI | `gpt-4` |
-
-### 🔧 **Archivo .env**
-
-```bash
-# Configuración básica
-CATASTRO_DEBUG=false
-CATASTRO_LOG_LEVEL=INFO
-CATASTRO_TIMEOUT=30
-
-# Rate limiting
-CATASTRO_MAX_REQUESTS_PER_MINUTE=60
-CATASTRO_MAX_REQUESTS_PER_HOUR=1000
-
-# OpenAI (opcional)
-CATASTRO_OPENAI_API_KEY=tu_api_key_aqui
-CATASTRO_OPENAI_MODEL=gpt-4
-CATASTRO_OPENAI_TEMPERATURE=0.3
-```
-
----
-
-## 🧪 Testing y Calidad
-
-### ⚡ **Ejecutar Tests**
-
-```bash
-# Test de conectividad con API oficial
-python -c "import asyncio; from services.catastro_service import CatastroService; asyncio.run(CatastroService().consultar_por_referencia('2314501EG1421S0001KJ'))"
-
-# Tests unitarios completos
-pytest tests/ -v --cov=services --cov=models
-
-# Test específico de referencias
-pytest tests/test-validacion-simple.py -v
-
-# Test manual interactivo
-python tests/test-manual.py
-```
-
-### 🎯 **Cobertura de Tests**
-
-- ✅ **Validación de referencias** - Formatos 14 y 20 caracteres
-- ✅ **Servicios de consulta** - Mocks y endpoints reales  
-- ✅ **Manejo de errores** - Timeouts, 404, rate limiting
-- ✅ **Parsing JSON/XML** - Respuestas del Catastro
-- ✅ **División horizontal** - Múltiples inmuebles
-- ✅ **Coordenadas GPS** - Validación rangos España
-
----
-
-## 🚨 Manejo de Errores y Troubleshooting
-
-### **Errores Comunes**
-
-| Error | Causa | Solución |
-|-------|-------|----------|
-| `Referencia catastral inválida` | Formato incorrecto | Verificar 20 chars alfanuméricos |
-| `Coordenadas fuera de rango` | No están en España | Usar 35-44°N, -10-5°E |
-| `Servicio no disponible` | Catastro en mantenimiento | Reintentar en unos minutos |
-| `Timeout` | Respuesta muy lenta | Aumentar `CATASTRO_TIMEOUT` |
-| `Rate limit exceeded` | Demasiadas consultas | Esperar 1 minuto |
-
-### **Diagnóstico**
-
-```bash
-# Verificar logs
-tail -f logs/catastro_mcp.log
-
-# Test de conectividad
-python -c "import httpx; print(httpx.get('https://ovc.catastro.meh.es').status_code)"
-
-# Debug modo completo
-export CATASTRO_DEBUG=true
-python mcp_server.py
-```
-
----
-
-## 📚 Documentación Adicional
-
-- 📖 [Guía de Usuario](docs/GUIA_USUARIO.md) - Uso detallado de cada herramienta
-- 🛠️ [Guía de Desarrollo](docs/MCP_DEVELOPMENT_GUIDE.md) - Desarrollo y contribución
-- 🗺️ [Roadmap](docs/ROADMAP.md) - Características futuras
-- 📄 [API del Catastro](Guia_Completa_API_Catastro.md) - Documentación oficial completa
-
----
-
-## ❓ FAQ
-
-**¿Funciona sin internet?**  
-❌ No, necesita acceso a `ovc.catastro.meh.es`
-
-**¿Consulta otros países?**  
-❌ Solo España y territorios españoles
-
-**¿Hay límites de consultas?**  
-✅ Sí, 60 por minuto (configurable)
-
-**¿Los resúmenes IA son gratis?**  
-✅ Modo simulado gratis, OpenAI requiere API key
-
-**¿Compatible con Claude Code?**  
-✅ Diseñado específicamente para Claude Code
-
-**¿Qué es división horizontal?**  
-🏢 Parcelas con múltiples inmuebles (pisos, locales, etc.)
-
----
-
-## 🤝 Contribuir
-
-```bash
-# Fork del proyecto
-git clone https://github.com/CabhuDev/mcp_Catastro.git
-
-# Crear rama de feature
-git checkout -b feature/nueva-funcionalidad
-
-# Hacer cambios y tests
-pytest tests/ -v
-
-# Commit y push
-git commit -m "feat: añadir nueva funcionalidad"
-git push origin feature/nueva-funcionalidad
-
-# Crear Pull Request
-```
-
-### **Estándares de Código**
-- ✅ **Python 3.11+** - Tipado moderno
-- ✅ **Pydantic V2** - Validación de datos
-- ✅ **Black + isort** - Formato de código
-- ✅ **Pytest** - Tests unitarios
-- ✅ **Docstrings** - Documentación en código
-
----
-
-## 📝 Changelog
-
-### 🆕 **v3.0.0 - División Horizontal** (Actual)
-- ✅ **Nueva herramienta:** `consultar_parcela_por_codigo`
-- ✅ **Soporte completo** para parcelas con múltiples inmuebles
-- ✅ **Estructura dual** - Manejo 14 y 20 caracteres
-- ✅ **Análisis detallado** - Coeficientes, escaleras, plantas
-- ✅ **Documentación actualizada** - Casos de uso reales
-
-### 📚 **v2.0.0 - MCP Puro**
-- ✅ Eliminado FastAPI y Docker (innecesarios)
-- ✅ MCP 100% real con protocolo stdio
-- ✅ Dependencias mínimas (6 esenciales)
-- ✅ Optimizado para Claude Code
-
-### 🎯 **v1.0.0 - API Oficial**
-- ✅ Migración a endpoints WCF oficiales
-- ✅ Soporte JSON nativo + fallback XML
-- ✅ Sistema de IA integrado
-
----
-
-## 📄 Licencia
-
-**MIT License** - Libre para uso comercial y personal.
-
----
-
-## 🆘 Soporte
-
-- **Issues:** [GitHub Issues](https://github.com/CabhuDev/mcp_Catastro/issues)
-- **Documentación:** [`docs/`](docs/)
-- **Tests:** `python tests/test-manual.py`
-- **Logs:** `logs/catastro_mcp.log`
-
----
-
-## 👨‍💻 Autor
-
-**Pablo Cabello Hurtado**  
-📧 pablo.cabello.hurtado@gmail.com  
-🐙 GitHub: [@CabhuDev](https://github.com/CabhuDev)
-
----
-
-<div align="center">
-
-**🏠 Hecho con ❤️ para la comunidad española**
-
-[![Catastro España](https://img.shields.io/badge/Datos-Catastro%20España-red.svg)](https://sede.catastro.gob.es/)
-[![MCP Protocol](https://img.shields.io/badge/Protocol-MCP-green.svg)](https://modelcontextprotocol.io/)
-[![Claude Code](https://img.shields.io/badge/IDE-Claude%20Code-purple.svg)](https://claude.ai/code)
-
-</div>
+La API puede cambiar o estar indisponible. JSON y XML se normalizan, y las respuestas inesperadas se distinguen de ausencia de datos. Licencia MIT; autor original: Pablo Cabello Hurtado.

@@ -6,7 +6,7 @@
 
 ### 📋 Prerrequisitos
 
-- **Python 3.11+**
+- **Python 3.14**
 - **Git**
 - **Claude Code** (para testing)
 
@@ -17,21 +17,8 @@
 git clone https://github.com/CabhuDev/mcp_Catastro.git
 cd mcp_Catastro
 
-# 2. Crear entorno virtual
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# o
-venv\Scripts\activate     # Windows
-
-# 3. Instalar dependencias
-pip install -r requirements.txt
-
-# 4. Instalar dependencias de desarrollo
-pip install pytest black isort flake8 mypy
-
-# 5. Configurar pre-commit (opcional)
-pip install pre-commit
-pre-commit install
+# 2. Instalar exactamente el entorno bloqueado
+uv sync --locked --all-extras --dev
 ```
 
 ## 🧪 Testing
@@ -39,13 +26,13 @@ pre-commit install
 ### Tests Unitarios
 ```bash
 # Ejecutar todos los tests
-pytest tests/ -v
+uv run --locked pytest -q
 
 # Tests con cobertura
-pytest tests/ --cov=services --cov=models --cov-report=html
+uv run --locked pytest --cov=services --cov=models --cov=mcp_server --cov-report=html
 
 # Test específico
-pytest tests/test-validacion-simple.py -v
+uv run --locked pytest -q
 ```
 
 ### Tests de Integración
@@ -62,7 +49,7 @@ asyncio.run(test())
 "
 
 # Test del servidor MCP
-python mcp_server.py &
+uv run --locked python mcp_server.py &
 # ... probar herramientas MCP ...
 kill %1
 ```
@@ -150,7 +137,7 @@ Descripción clara del problema o característica
 3. Error/resultado esperado
 
 **Entorno:**
-- Python: 3.11.x
+- Python: 3.14.x
 - OS: Windows/Linux/Mac
 - MCP Version: x.x.x
 ```
@@ -173,7 +160,7 @@ git checkout -b docs/actualizar-readme
 # ...
 
 # Verificar tests
-pytest tests/ -v
+uv run --locked pytest -q
 
 # Verificar formato
 black --check services/ models/
@@ -247,7 +234,6 @@ CONSULTA_RCCOOR = "/OVCServWeb/OVCWcfCoord/COVCCoordenadas.svc/json/Consulta_RCC
 ## 🚨 Limitaciones Conocidas
 
 ### API del Catastro
-- **Rate limit:** 60 consultas/minuto
 - **Timeouts:** Respuestas lentas ocasionales
 - **Búsqueda por dirección:** No disponible de forma fiable
 - **Datos históricos:** Solo datos actuales
@@ -257,7 +243,7 @@ CONSULTA_RCCOOR = "/OVCServWeb/OVCWcfCoord/COVCCoordenadas.svc/json/Consulta_RCC
 - **Formato referencias:** Solo formato actual español
 - **OpenAI:** Coste adicional para IA real
 
-## 📊 Métricas y Monitoreo
+## 📊 Logging y observabilidad futura
 
 ### Logging
 ```python
@@ -265,16 +251,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Ejemplos
-logger.info(f"Consulta exitosa: {referencia}")
-logger.warning(f"Timeout en consulta: {referencia}")
-logger.error(f"Error parseando respuesta: {error}")
+logger.info("Consulta completada endpoint=%s estado=%d", endpoint, estado)
 ```
 
-### Métricas Clave
-- **Tiempo respuesta** - Latencia API Catastro
-- **Tasa error** - Consultas fallidas vs exitosas
-- **Cache hits** - Eficiencia cache
-- **Rate limiting** - Consultas por minuto
+Los datos catastrales se ocultan por defecto. Para diagnósticos controlados se
+requieren conjuntamente `CATASTRO_LOG_LEVEL=DEBUG` y
+`CATASTRO_LOG_SENSITIVE_DATA=true`. El proyecto todavía no exporta métricas ni
+implementa caché o rate limiting; esas capacidades están en el roadmap.
 
 ## 🆘 Obtener Ayuda
 
@@ -292,7 +275,7 @@ logger.error(f"Error parseando respuesta: {error}")
 # Logs detallados
 export CATASTRO_DEBUG=true
 export CATASTRO_LOG_LEVEL=DEBUG
-python mcp_server.py
+uv run --locked python mcp_server.py
 
 # Test conectividad
 python -c "import httpx; print(httpx.get('https://ovc.catastro.meh.es').status_code)"
@@ -316,7 +299,7 @@ Descripción de lo que debería pasar.
 
 **📱 Entorno**
 - OS: [ej. Windows 11]
-- Python: [ej. 3.11.5]
+- Python: [ej. 3.14.1]
 - MCP Catastro: [ej. 3.0.0]
 
 **📋 Logs**

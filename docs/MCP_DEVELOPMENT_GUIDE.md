@@ -29,7 +29,8 @@ Esta guía sirve como **estándar definitivo** para crear servidores MCP (Model 
 mi_mcp_server/
 ├── 🚀 mcp_server.py          # Servidor MCP principal (OBLIGATORIO)
 ├── 📄 claude-config.json     # Configuración Claude Code (OBLIGATORIO)
-├── 📋 requirements.txt       # Solo dependencias esenciales (OBLIGATORIO)
+├── 📋 pyproject.toml        # Dependencias directas (OBLIGATORIO)
+├── 🔒 uv.lock               # Resolución reproducible (OBLIGATORIO)
 ├── 🔧 services/              # Lógica de negocio
 │   ├── __init__.py
 │   └── core_service.py       # Tu servicio principal
@@ -52,31 +53,29 @@ mi_mcp_server/
 
 ## 📦 Dependencias Esenciales
 
-### **requirements.txt mínimo:**
-```txt
-# MCP (Model Context Protocol) - CORE REQUIREMENT
-mcp>=1.0.0
+### **pyproject.toml mínimo:**
+```toml
+[project]
+name = "mi-mcp-server"
+version = "1.0.0"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "mcp>=2,<3",
+    "httpx>=0.25.2,<1",
+    "pydantic>=2.12,<3",
+]
 
-# HTTP Client (si necesitas hacer peticiones)
-httpx>=0.25.2
+[dependency-groups]
+dev = ["pytest>=7.4.3", "black>=23.11", "isort>=5.12", "flake8>=6.1"]
 
-# Data Models y Validación
-pydantic>=2.5.0
-
-# Configuración de entorno
-python-dotenv>=1.0.0
-
-# Logging estructurado (opcional pero recomendado)
-structlog>=23.2.0
-
-# Testing (desarrollo)
-pytest>=7.4.3
-pytest-asyncio>=0.21.1
+[tool.uv]
+package = false
 ```
 
 ### **Instalar dependencias:**
 ```bash
-pip install -r requirements.txt
+uv lock
+uv sync --locked
 ```
 
 ---
@@ -91,21 +90,12 @@ Plantilla estándar para servidor MCP
 Reemplaza [MI_SERVICIO] con el nombre de tu servicio
 """
 
-import asyncio
-import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Annotated, Any
 
-# Importar bibliotecas MCP REALES
-try:
-    from mcp.server import Server, NotificationOptions
-    from mcp.server.models import InitializationOptions
-    import mcp.server.stdio
-    import mcp.types as types
-    MCP_AVAILABLE = True
-except ImportError:
-    MCP_AVAILABLE = False
-    print("ERROR: Bibliotecas MCP no encontradas. Instala con: pip install mcp")
+from mcp.server import MCPServer
+from mcp.types import ToolAnnotations
+from pydantic import Field
 
 # Importar tus servicios locales
 from services.core_service import CoreService
@@ -116,127 +106,49 @@ from config.settings import get_settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-if not MCP_AVAILABLE:
-    logger.error("Bibliotecas MCP no disponibles. El servidor no funcionará con Claude Code.")
-    exit(1)
-
 # Inicializar servicios
 settings = get_settings()
 core_service = CoreService()
 
-# Crear servidor MCP REAL
-server = Server("[mi-servicio]-mcp")
+# MCPServer genera los esquemas desde los tipos y docstrings.
+server = MCPServer(
+    "[mi-servicio]-mcp",
+    title="Mi servicio",
+    description="Descripción del servidor",
+    version="1.0.0",
+)
 
-@server.list_tools()
-async def handle_list_tools() -> List[types.Tool]:
-    """Lista todas las herramientas disponibles del servidor MCP"""
-    return [
-        types.Tool(
-            name="mi_herramienta_principal",
-            description="Descripción clara de qué hace esta herramienta",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "parametro_requerido": {
-                        "type": "string",
-                        "description": "Descripción del parámetro"
-                    },
-                    "parametro_opcional": {
-                        "type": "boolean",
-                        "description": "Parámetro opcional",
-                        "default": False
-                    }
-                },
-                "required": ["parametro_requerido"]
-            }
-        ),
-        # Agregar más herramientas aquí...
-    ]
+@server.tool(
+    title="Mi herramienta principal",
+    annotations=ToolAnnotations(read_only_hint=True, idempotent_hint=True),
+)
+async def mi_herramienta_principal(
+    parametro_requerido: Annotated[
+        str,
+        Field(min_length=1, description="Descripción del parámetro"),
+    ],
+    parametro_opcional: bool = False,
+) -> dict[str, Any]:
+    """Descripción clara de qué hace esta herramienta."""
+    resultado = await core_service.procesar(parametro_requerido)
+    return resultado.model_dump(mode="json")
 
-@server.call_tool()
-async def handle_call_tool(
-    name: str, arguments: dict[str, Any] | None
-) -> List[types.TextContent]:
-    """Maneja las llamadas a las herramientas"""
-    try:
-        if name == "mi_herramienta_principal":
-            parametro = arguments.get("parametro_requerido")
-            if not parametro:
-                raise ValueError("Parámetro requerido faltante")
-            
-            # Llamar a tu servicio
-            resultado = await core_service.procesar(parametro)
-            
-            return [
-                types.TextContent(
-                    type="text",
-                    text=json.dumps(resultado.dict(), indent=2, ensure_ascii=False)
-                )
-            ]
-        
-        else:
-            raise ValueError(f"Herramienta desconocida: {name}")
-    
-    except Exception as e:
-        logger.error(f"Error en herramienta {name}: {str(e)}")
-        return [
-            types.TextContent(
-                type="text",
-                text=f"Error: {str(e)}"
-            )
-        ]
+@server.resource(
+    "mi-servicio://info",
+    name="informacion_servicio",
+    mime_type="application/json",
+)
+def informacion_servicio() -> dict[str, Any]:
+    """Expone las capacidades del servicio."""
+    return {"version": "1.0.0", "capabilities": ["mi_herramienta_principal"]}
 
-@server.list_resources()
-async def handle_list_resources() -> List[types.Resource]:
-    """Lista los recursos disponibles (opcional)"""
-    return [
-        types.Resource(
-            uri="mi-servicio://info",
-            name="Información del servicio",
-            description="Información sobre capacidades del servicio",
-            mimeType="application/json"
-        )
-    ]
-
-@server.read_resource()
-async def handle_read_resource(uri: str) -> str:
-    """Maneja la lectura de recursos (opcional)"""
-    if uri == "mi-servicio://info":
-        return json.dumps({
-            "version": "1.0.0",
-            "description": "Mi servidor MCP personalizado",
-            "capabilities": ["herramienta1", "herramienta2"]
-        }, indent=2)
-    else:
-        raise ValueError(f"Recurso no encontrado: {uri}")
-
-async def main():
-    """Función principal para ejecutar el servidor MCP"""
+def main() -> None:
+    """Ejecuta el servidor con el transporte stdio."""
     logger.info("🚀 Iniciando servidor MCP [MI_SERVICIO]...")
-    
-    # Ejecutar servidor con stdio (protocolo MCP real)
-    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="[mi-servicio]-mcp",
-                server_version="1.0.0",
-                capabilities=server.get_capabilities(
-                    notification_options=NotificationOptions(),
-                    experimental_capabilities={}
-                )
-            )
-        )
+    server.run(transport="stdio")
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("🛑 Servidor MCP detenido por el usuario")
-    except Exception as e:
-        logger.error(f"❌ Error fatal en servidor MCP: {str(e)}")
-        exit(1)
+    main()
 ```
 
 ---
@@ -314,9 +226,6 @@ class Settings:
         self.api_key = os.getenv("MI_SERVICIO_API_KEY")
         self.timeout = int(os.getenv("MI_SERVICIO_TIMEOUT", "30"))
         self.max_reintentos = int(os.getenv("MI_SERVICIO_MAX_REINTENTOS", "3"))
-        
-        # Rate limiting
-        self.max_requests_per_minute = int(os.getenv("MI_SERVICIO_MAX_REQUESTS_PER_MINUTE", "60"))
         
         # Logging
         self.log_level = os.getenv("MI_SERVICIO_LOG_LEVEL", "INFO")
@@ -491,7 +400,7 @@ def test_modelo_validacion():
     with pytest.raises(ValueError):
         MiModelo(id="ab", nombre="Test")  # ID muy corto
 
-# Ejecutar tests: pytest tests/ -v
+# Ejecutar tests: uv run --locked pytest -q
 ```
 
 ---
@@ -510,8 +419,6 @@ MI_SERVICIO_API_URL=https://api.ejemplo.com
 MI_SERVICIO_API_KEY=tu-api-key-aqui
 MI_SERVICIO_TIMEOUT=30
 
-# Rate limiting
-MI_SERVICIO_MAX_REQUESTS_PER_MINUTE=60
 MI_SERVICIO_MAX_REINTENTOS=3
 ```
 
@@ -522,7 +429,7 @@ MI_SERVICIO_MAX_REINTENTOS=3
 ### ✅ **Estructura Básica:**
 - [ ] `mcp_server.py` creado con plantilla
 - [ ] `claude-config.json` configurado
-- [ ] `requirements.txt` con dependencias mínimas
+- [ ] `pyproject.toml` y `uv.lock` sincronizados
 - [ ] Estructura de carpetas establecida
 
 ### ✅ **Funcionalidad Core:**
@@ -553,7 +460,7 @@ MI_SERVICIO_MAX_REINTENTOS=3
 ### **Error: "MCP no encontrado"**
 ```bash
 # Solución:
-pip install mcp
+uv sync --locked
 ```
 
 ### **Error: "Transport stdio not supported"**
@@ -621,7 +528,7 @@ return [types.TextContent(type="text", text=resultado)]
 
 ### **Paso 3: Testing**
 1. Crea tests básicos
-2. Ejecuta `python mcp_server.py` para verificar que inicia
+2. Ejecuta `uv run --locked python mcp_server.py` para verificar que inicia
 3. Prueba con `claude --mcp-config claude-config.json`
 4. Valida todas las herramientas funcionan
 
@@ -656,10 +563,10 @@ Con estas plantillas puedes crear un servidor MCP funcional en minutos:
 
 Tu servidor MCP está listo cuando:
 
-✅ `python mcp_server.py` ejecuta sin errores  
+✅ `uv run --locked python mcp_server.py` ejecuta sin errores
 ✅ `claude --mcp-config claude-config.json` se conecta  
 ✅ Claude puede listar y usar tus herramientas  
-✅ Los tests pasan: `pytest tests/ -v`  
+✅ Los tests pasan: `uv run --locked pytest -q`
 ✅ La documentación está completa  
 
 **¡Congratulations! Tienes un servidor MCP 100% funcional y profesional.**

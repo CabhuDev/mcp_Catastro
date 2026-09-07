@@ -59,7 +59,7 @@
 ## 🎯 **Funcionalidades Verificadas**
 
 ### ✅ **Servidor MCP Funcional**
-- ✅ Se inicia correctamente con `python mcp_server.py`
+- ✅ Se inicia correctamente con `uv run --locked python mcp_server.py`
 - ✅ 6 herramientas MCP registradas y funcionando
 - ✅ Compatible con Claude Code out-of-the-box
 
@@ -87,7 +87,7 @@
 - ✅ .gitignore (exclusiones Python completas)
 - ✅ .env.example (configuración ejemplo)
 - ✅ claude-config.json (configuración Claude Code)
-- ✅ requirements.txt (dependencias optimizadas)
+- ✅ pyproject.toml y uv.lock (dependencias reproducibles)
 - ✅ setup-env.ps1 (setup automático Windows)
 - ✅ Guia_Completa_API_Catastro.md (documentación API oficial)
 - ✅ REPO_INFO.md (metadatos del proyecto)

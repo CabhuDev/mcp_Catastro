@@ -1,0 +1,93 @@
+{
+  "consulta_dnprcResult": {
+    "control": {
+      "cudnp": 1,
+      "cucons": 2
+    },
+    "bico": {
+      "bi": {
+        "idbi": {
+          "cn": "UR",
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0013",
+            "cc1": "R",
+            "cc2": "S"
+          }
+        },
+        "dt": {
+          "loine": {
+            "cp": "18",
+            "cm": "21"
+          },
+          "cmc": "22",
+          "np": "GRANADA",
+          "nm": "ARMILLA",
+          "locs": {
+            "lous": {
+              "lourb": {
+                "dir": {
+                  "cv": "182",
+                  "tv": "CL",
+                  "nv": "REYES CATOLICOS",
+                  "pnp": "6"
+                },
+                "loint": {
+                  "es": "1",
+                  "pt": "00",
+                  "pu": "A"
+                },
+                "dp": "18100",
+                "dm": "1"
+              }
+            }
+          }
+        },
+        "ldt": "CL REYES CATOLICOS 6 Es:1 Pl:00 Pt:A 18100 ARMILLA (GRANADA)",
+        "debi": {
+          "luso": "Residencial",
+          "sfc": "52",
+          "cpt": "4,471000",
+          "ant": "2008"
+        }
+      },
+      "finca": {
+        "ldt": "CL REYES CATOLICOS 6  ARMILLA (GRANADA)",
+        "ltp": "Parcela con varios inmuebles (division horizontal)",
+        "dff": {
+          "ss": "304"
+        },
+        "infgraf": {
+          "igraf": "https://www1.sedecatastro.gob.es/Cartografia/mapa.aspx?del=18&mun=22&refcat=4611123VG4141B"
+        }
+      },
+      "lcons": [
+        {
+          "lcd": "VIVIENDA",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "1 ",
+                "pt": "00 ",
+                "pu": "A  "
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "46"
+          },
+          "dvcons": {
+            "dtip": "VIVIENDA COLECTIVA"
+          }
+        },
+        {
+          "lcd": "ELEMENTOS COMUNES",
+          "dfcons": {
+            "stl": "6"
+          }
+        }
+      ]
+    }
+  }
+}

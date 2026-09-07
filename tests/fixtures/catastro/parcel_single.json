@@ -1,0 +1,142 @@
+{
+  "consulta_dnprcResult": {
+    "control": {
+      "cudnp": 1,
+      "cucons": 4
+    },
+    "bico": {
+      "bi": {
+        "idbi": {
+          "cn": "UR",
+          "rc": {
+            "pc1": "4418928",
+            "pc2": "VG4141G",
+            "car": "0001",
+            "cc1": "I",
+            "cc2": "W"
+          }
+        },
+        "dt": {
+          "loine": {
+            "cp": "18",
+            "cm": "62"
+          },
+          "cmc": "64",
+          "np": "GRANADA",
+          "nm": "CHURRIANA DE LA VEGA",
+          "locs": {
+            "lous": {
+              "lourb": {
+                "dir": {
+                  "cv": "237",
+                  "tv": "CL",
+                  "nv": "COSTA RICA",
+                  "pnp": "49",
+                  "snp": "0"
+                },
+                "loint": {
+                  "es": "T",
+                  "pt": "OD",
+                  "pu": "OS"
+                },
+                "dp": "18194",
+                "dm": "1"
+              }
+            }
+          }
+        },
+        "ldt": "CL COSTA RICA 49 18194 CHURRIANA DE LA VEGA (GRANADA)",
+        "debi": {
+          "luso": "Residencial",
+          "sfc": "196",
+          "cpt": "100,000000",
+          "ant": "2004"
+        }
+      },
+      "finca": {
+        "ldt": "CL COSTA RICA 49  CHURRIANA DE LA VEGA (GRANADA)",
+        "ltp": "Parcela construida sin división horizontal",
+        "dff": {
+          "ss": "130"
+        },
+        "infgraf": {
+          "igraf": "https://www1.sedecatastro.gob.es/Cartografia/mapa.aspx?del=18&mun=64&refcat=4418928VG4141G"
+        }
+      },
+      "lcons": [
+        {
+          "lcd": "APARCAMIENTO",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "1",
+                "pt": "SM",
+                "pu": "01"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "68"
+          },
+          "dvcons": {
+            "dtip": "ANEJOS DE VIVIENDA Y LOCALES EN ESTRUCTURA"
+          }
+        },
+        {
+          "lcd": "OTROS USOS",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "1",
+                "pt": "00",
+                "pu": "01"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "4"
+          },
+          "dvcons": {
+            "dtip": "ANEJOS DE VIVIENDA Y LOCALES EN ESTRUCTURA"
+          }
+        },
+        {
+          "lcd": "VIVIENDA",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "1",
+                "pt": "00",
+                "pu": "02"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "57"
+          },
+          "dvcons": {
+            "dtip": "VIVIENDA UNIFAMILIAR"
+          }
+        },
+        {
+          "lcd": "VIVIENDA",
+          "dt": {
+            "lourb": {
+              "loint": {
+                "es": "1",
+                "pt": "01",
+                "pu": "01"
+              }
+            }
+          },
+          "dfcons": {
+            "stl": "67"
+          },
+          "dvcons": {
+            "dtip": "VIVIENDA UNIFAMILIAR"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "consulta_callejeroResult": {
+    "control": {
+      "cuca": 1
+    },
+    "callejero": {
+      "calle": [
+        {
+          "dir": {
+            "cv": "182",
+            "tv": "CL",
+            "nv": "REYES CATOLICOS"
+          },
+          "dirine": {
+            "ecine": "00",
+            "esine": "01",
+            "nucine": "01",
+            "sine": "CALLE",
+            "vine": "00127",
+            "deine": "REYES CATOLICOS"
+          }
+        }
+      ]
+    }
+  }
+}

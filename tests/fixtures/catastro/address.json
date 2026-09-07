@@ -1,0 +1,957 @@
+{
+  "consulta_dnplocResult": {
+    "control": {
+      "cudnp": 22
+    },
+    "lrcdnp": {
+      "rcdnp": [
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0001",
+            "cc1": "K",
+            "cc2": "E"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "01"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0002",
+            "cc1": "L",
+            "cc2": "R"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "02"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0003",
+            "cc1": "B",
+            "cc2": "T"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "03"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0004",
+            "cc1": "Z",
+            "cc2": "Y"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "05"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0005",
+            "cc1": "X",
+            "cc2": "U"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "06"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0006",
+            "cc1": "M",
+            "cc2": "I"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "07"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0007",
+            "cc1": "Q",
+            "cc2": "O"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "08"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "3,780000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0008",
+            "cc1": "W",
+            "cc2": "P"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "T1"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "30",
+            "cpt": "1,360000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0009",
+            "cc1": "E",
+            "cc2": "A"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "T2"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "12",
+            "cpt": "0,600000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0010",
+            "cc1": "Q",
+            "cc2": "O"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "T3"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "12",
+            "cpt": "0,580000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0011",
+            "cc1": "W",
+            "cc2": "P"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "T4"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "18",
+            "cpt": "0,770000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0012",
+            "cc1": "E",
+            "cc2": "A"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "-1",
+                    "pu": "T5"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Almacen-Estacionamiento",
+            "sfc": "18",
+            "cpt": "0,750000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0013",
+            "cc1": "R",
+            "cc2": "S"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "00",
+                    "pu": "A"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "52",
+            "cpt": "4,470000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0014",
+            "cc1": "T",
+            "cc2": "D"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "00",
+                    "pu": "B"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "90",
+            "cpt": "7,770000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0015",
+            "cc1": "Y",
+            "cc2": "F"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "00",
+                    "pu": "C"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "86",
+            "cpt": "7,320000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0016",
+            "cc1": "U",
+            "cc2": "G"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "01",
+                    "pu": "A"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "82",
+            "cpt": "7,080000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0017",
+            "cc1": "I",
+            "cc2": "H"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "01",
+                    "pu": "B"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "90",
+            "cpt": "7,770000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0018",
+            "cc1": "O",
+            "cc2": "J"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "01",
+                    "pu": "C"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "86",
+            "cpt": "7,320000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0019",
+            "cc1": "P",
+            "cc2": "K"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "02",
+                    "pu": "A"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "82",
+            "cpt": "7,080000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0020",
+            "cc1": "I",
+            "cc2": "H"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "02",
+                    "pu": "B"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "90",
+            "cpt": "7,770000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0021",
+            "cc1": "O",
+            "cc2": "J"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "02",
+                    "pu": "C"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "86",
+            "cpt": "7,320000",
+            "ant": "2008"
+          }
+        },
+        {
+          "rc": {
+            "pc1": "4611123",
+            "pc2": "VG4141B",
+            "car": "0022",
+            "cc1": "P",
+            "cc2": "K"
+          },
+          "dt": {
+            "loine": {
+              "cp": "18",
+              "cm": "21"
+            },
+            "cmc": "22",
+            "np": "GRANADA",
+            "nm": "ARMILLA",
+            "locs": {
+              "lous": {
+                "lourb": {
+                  "dir": {
+                    "cv": "182",
+                    "tv": "CL",
+                    "nv": "REYES CATOLICOS",
+                    "pnp": "6"
+                  },
+                  "loint": {
+                    "es": "1",
+                    "pt": "03",
+                    "pu": "A"
+                  },
+                  "dp": "18100",
+                  "dm": "1"
+                }
+              }
+            }
+          },
+          "debi": {
+            "luso": "Residencial",
+            "sfc": "64",
+            "cpt": "5,550000",
+            "ant": "2008"
+          }
+        }
+      ]
+    }
+  }
+}

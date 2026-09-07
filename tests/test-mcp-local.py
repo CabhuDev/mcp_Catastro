@@ -16,6 +16,8 @@ import sys
 import logging
 from typing import Dict, Any
 
+from mcp.types.version import LATEST_PROTOCOL_VERSION
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -77,7 +79,7 @@ class MCPTester:
         logger.info("\n🔄 Probando inicialización...")
         
         response = await self.send_request("initialize", {
-            "protocolVersion": "2024-11-05",
+            "protocolVersion": LATEST_PROTOCOL_VERSION,
             "capabilities": {},
             "clientInfo": {
                 "name": "test-client",
@@ -86,6 +88,13 @@ class MCPTester:
         })
         
         if response and "result" in response:
+            notification = {
+                "jsonrpc": "2.0",
+                "method": "notifications/initialized",
+                "params": {},
+            }
+            self.process.stdin.write((json.dumps(notification) + "\n").encode())
+            await self.process.stdin.drain()
             logger.info("✅ Inicialización exitosa")
             logger.info(f"   Servidor: {response['result'].get('serverInfo', {}).get('name', 'Unknown')}")
             logger.info(f"   Versión: {response['result'].get('serverInfo', {}).get('version', 'Unknown')}")

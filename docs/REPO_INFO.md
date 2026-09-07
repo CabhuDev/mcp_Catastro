@@ -14,7 +14,7 @@
 - **Nombre:** MCP Catastro España
 - **Versión:** 3.0.0
 - **Licencia:** MIT
-- **Lenguaje Principal:** Python 3.11+
+- **Lenguaje Principal:** Python 3.14
 - **Protocolo:** MCP (Model Context Protocol)
 - **API:** Catastro de España (Oficial)
 
@@ -44,7 +44,7 @@ Soporta parcelas con división horizontal y usa endpoints oficiales del gobierno
 - **Archivos Python:** 8 archivos principales
 - **Líneas de código:** ~2,000 líneas
 - **Herramientas MCP:** 6 herramientas funcionales
-- **Dependencias:** 6 esenciales + 6 desarrollo
+- **Dependencias:** Declaradas en `pyproject.toml` y bloqueadas en `uv.lock`
 - **Documentación:** 5 documentos principales
 
 ## 🎯 Audiencia Objetivo
@@ -62,14 +62,15 @@ Soporta parcelas con división horizontal y usa endpoints oficiales del gobierno
 - `README.md` - Documentación completa
 - `CONTRIBUTING.md` - Guía de contribución
 - `claude-config.json` - Configuración Claude Code
+- `pyproject.toml` / `uv.lock` - Dependencias reproducibles
 - `Guia_Completa_API_Catastro.md` - Documentación API oficial
 
 ## 🔧 Setup Rápido para Nuevos Usuarios
 ```bash
 git clone https://github.com/CabhuDev/mcp_Catastro.git
 cd mcp_Catastro
-pip install -r requirements.txt
-python mcp_server.py
+uv sync --locked
+uv run --locked python mcp_server.py
 ```
 
 ## 🌟 Características Únicas

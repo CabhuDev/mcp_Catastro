@@ -1,13 +1,14 @@
 {
   "mcpServers": {
     "catastro": {
-      "command": "python",
-      "args": ["mcp_server.py"],
+      "command": "uv",
+      "args": ["run", "--locked", "python", "mcp_server.py"],
       "cwd": ".",
       "transport": "stdio",
       "env": {
         "CATASTRO_DEBUG": "false",
-        "CATASTRO_LOG_LEVEL": "INFO"
+        "CATASTRO_LOG_LEVEL": "INFO",
+        "CATASTRO_LOG_SENSITIVE_DATA": "false"
       }
     }
   }
