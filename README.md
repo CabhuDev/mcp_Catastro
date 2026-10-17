@@ -466,7 +466,8 @@ git push origin feature/nueva-funcionalidad
 
 **Pablo Cabello Hurtado**  
 📧 pablo.cabello.hurtado@gmail.com  
-🐙 GitHub: [@CabhuDev](https://github.com/CabhuDev)
+🐙 GitHub: [@CabhuDev](https://github.com/CabhuDev)  
+🌐 Web: [pablocabello.eu](https://pablocabello.eu) · Arquitecto Técnico · IA aplicada a construcción
 
 ---
 
